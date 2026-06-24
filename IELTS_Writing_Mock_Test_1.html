@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Writing Mock Test 1</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue-dark:#002d72;
+  --blue-mid:#0057b7;
+  --red:#c41230;
+  --green:#1e7b3b;
+  --gold:#c8a400;
+  --bg:#f2f5fa;
+  --border:#dde2ea;
+}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:#222;min-height:100vh;}
+
+/* ─── SCREENS ─── */
+.screen{display:none;min-height:100vh;}
+
+/* ─── LOGIN ─── */
+#loginScreen{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,#001a52 0%,#003fa3 60%,#005fc7 100%);
+  position:relative;overflow:hidden;
+}
+#loginScreen::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.login-card{
+  background:white;border-radius:16px;padding:44px 40px 36px;
+  width:100%;max-width:460px;box-shadow:0 24px 80px rgba(0,0,0,.35);
+  position:relative;z-index:1;
+}
+.ielts-badge{
+  display:flex;flex-direction:column;align-items:center;margin-bottom:28px;
+}
+.badge-top{
+  background:var(--blue-dark);color:white;font-size:30px;font-weight:900;
+  letter-spacing:6px;padding:8px 24px;border-radius:6px 6px 0 0;
+  border-bottom:3px solid var(--gold);
+}
+.badge-bottom{
+  background:#e8edf5;font-size:10px;letter-spacing:2.5px;
+  text-transform:uppercase;color:#555;padding:4px 24px;
+  border-radius:0 0 6px 6px;width:100%;text-align:center;font-weight:600;
+}
+.login-title{font-size:21px;font-weight:800;color:var(--blue-dark);text-align:center;margin-bottom:4px;}
+.login-sub{font-size:13px;color:#888;text-align:center;margin-bottom:28px;}
+
+.form-label{display:block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#555;margin-bottom:6px;}
+.form-input{
+  width:100%;padding:13px 15px;border:2px solid var(--border);border-radius:9px;
+  font-size:15px;color:#222;outline:none;transition:border-color .2s,box-shadow .2s;
+  font-family:inherit;
+}
+.form-input:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(0,87,183,.12);}
+.form-group{margin-bottom:18px;}
+
+.btn-begin{
+  width:100%;padding:15px;background:var(--blue-dark);color:white;
+  font-size:15px;font-weight:800;border:none;border-radius:9px;cursor:pointer;
+  letter-spacing:1.5px;text-transform:uppercase;transition:background .2s,transform .1s;
+  margin-top:6px;
+}
+.btn-begin:hover{background:var(--blue-mid);}
+.btn-begin:active{transform:scale(.98);}
+.login-note{font-size:12px;color:#bbb;text-align:center;margin-top:16px;line-height:1.6;}
+.login-note strong{color:#999;}
+
+/* ─── TEST HEADER ─── */
+#testScreen{background:var(--bg);}
+.test-header{
+  background:var(--blue-dark);color:white;height:62px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;position:sticky;top:0;z-index:200;
+  box-shadow:0 3px 12px rgba(0,0,0,.25);
+}
+.hdr-left{display:flex;flex-direction:column;gap:2px;}
+.hdr-title{font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;}
+.hdr-student{font-size:11px;opacity:.75;letter-spacing:.3px;}
+.hdr-right{display:flex;align-items:center;gap:16px;}
+
+.timer-wrap{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  border-radius:8px;padding:5px 18px;text-align:center;min-width:110px;
+}
+.timer-label{font-size:8.5px;text-transform:uppercase;letter-spacing:1.5px;opacity:.75;margin-bottom:1px;}
+.timer-val{font-size:26px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:3px;}
+.timer-val.warn{color:#ffd54f;}
+.timer-val.crit{color:#ff5252;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+.btn-submit-hdr{
+  background:#2c4f8a;color:white;border:none;padding:10px 22px;
+  border-radius:7px;font-size:12px;font-weight:900;cursor:pointer;
+  letter-spacing:1px;text-transform:uppercase;transition:background .2s;
+}
+.btn-submit-hdr:hover{background:#1e3a6e;}
+
+/* ─── TASK NAV BUTTONS ─── */
+.task-nav-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:20px;padding-top:4px;
+}
+.btn-nav{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 24px;border-radius:8px;font-size:13.5px;font-weight:700;
+  cursor:pointer;border:none;transition:background .2s,transform .1s;
+  letter-spacing:.3px;
+}
+.btn-nav:active{transform:scale(.97);}
+.btn-nav-next{
+  background:#5b7db1;color:white;margin-left:auto;
+}
+.btn-nav-next:hover{background:#4a6a9a;}
+.btn-nav-back{
+  background:#e8edf5;color:#445;border:1px solid #ccd4e0;
+}
+.btn-nav-back:hover{background:#dae1ee;}
+.btn-submit-task{
+  background:#2c4f8a;color:white;
+  padding:11px 26px;border-radius:8px;font-size:13.5px;font-weight:900;
+  cursor:pointer;border:none;transition:background .2s,transform .1s;
+  letter-spacing:.5px;text-transform:uppercase;
+}
+.btn-submit-task:hover{background:#1e3a6e;}
+.btn-submit-task:active{transform:scale(.97);}
+
+/* ─── TABS ─── */
+.tabs-bar{
+  background:white;border-bottom:3px solid var(--blue-dark);
+  padding:0 28px;display:flex;gap:0;
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
+}
+.tab-btn{
+  padding:15px 32px;cursor:pointer;font-size:13.5px;font-weight:700;
+  color:#777;border-bottom:3px solid transparent;margin-bottom:-3px;
+  transition:all .2s;user-select:none;white-space:nowrap;letter-spacing:.2px;
+}
+.tab-btn:hover{color:var(--blue-dark);background:#f0f4fb;}
+.tab-btn.active{color:var(--blue-dark);border-bottom-color:var(--red);background:#eef4ff;}
+
+/* ─── TASK CONTENT ─── */
+.task-pane{display:none;padding:26px 28px;max-width:1080px;margin:0 auto;}
+.task-pane.active{display:block;}
+
+.task-top-box{
+  background:white;border:1px solid var(--border);border-radius:10px;
+  padding:22px 26px;margin-bottom:18px;
+  box-shadow:0 1px 6px rgba(0,0,0,.05);
+}
+.task-heading{
+  font-size:16px;font-weight:800;color:var(--blue-dark);
+  padding-bottom:10px;margin-bottom:14px;
+  border-bottom:2px solid var(--blue-dark);letter-spacing:.3px;
+}
+.task-prompt{
+  background:#fffbe6;border:1px solid #e0c84a;border-left:5px solid var(--gold);
+  border-radius:5px;padding:14px 18px;margin-bottom:12px;
+}
+.task-prompt p{font-size:14px;font-style:italic;line-height:1.65;color:#2a2a2a;}
+.task-prompt p+p{margin-top:7px;}
+.task-meta{display:flex;gap:20px;flex-wrap:wrap;margin-top:10px;}
+.task-timing{font-size:12px;color:#888;}
+.task-timing span{font-weight:600;color:#555;}
+.task-minwords{font-size:12.5px;font-weight:700;color:var(--red);}
+
+/* ─── GRAPH ─── */
+.graph-box{
+  background:white;border:1px solid var(--border);border-radius:10px;
+  padding:24px 28px 20px;margin-bottom:18px;
+  box-shadow:0 1px 6px rgba(0,0,0,.05);
+}
+.graph-box-title{
+  text-align:center;font-size:13.5px;font-weight:700;color:#222;
+  margin-bottom:18px;line-height:1.45;
+}
+.chart-wrap{position:relative;height:380px;}
+
+/* ─── ANSWER AREA ─── */
+.answer-box{
+  background:white;border:1px solid var(--border);border-radius:10px;
+  padding:22px 24px;box-shadow:0 1px 6px rgba(0,0,0,.05);
+}
+.answer-box-title{font-size:13px;font-weight:700;color:#444;margin-bottom:12px;}
+.answer-textarea{
+  width:100%;padding:15px;border:2px solid var(--border);border-radius:8px;
+  font-size:15px;line-height:1.75;resize:vertical;font-family:'Segoe UI',Arial,sans-serif;
+  color:#222;outline:none;transition:border-color .2s,box-shadow .2s;
+  min-height:240px;
+}
+.answer-textarea:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(0,87,183,.1);}
+.wc-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+.wc-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:600;color:#888;
+  background:#f5f6f8;border:1px solid var(--border);
+  border-radius:20px;padding:4px 14px;
+}
+.wc-badge.ok{color:var(--green);border-color:#9dd4b3;background:#f0fbf4;}
+.wc-badge.low{color:var(--red);border-color:#f0a0ad;background:#fff5f7;}
+.wc-hint{font-size:12px;color:#bbb;}
+
+/* ─── MODALS ─── */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;
+  align-items:center;justify-content:center;z-index:9999;
+  backdrop-filter:blur(3px);
+}
+.modal-bg.show{display:flex;}
+.modal{
+  background:white;border-radius:14px;padding:36px;width:90%;max-width:440px;
+  text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.3);
+}
+.modal-icon{font-size:52px;margin-bottom:14px;}
+.modal h3{font-size:20px;font-weight:800;color:var(--blue-dark);margin-bottom:10px;}
+.modal p{font-size:14px;color:#666;line-height:1.65;margin-bottom:26px;}
+.modal-btns{display:flex;gap:12px;}
+.btn-cancel{
+  flex:1;padding:13px;background:#f0f2f5;color:#444;border:1px solid var(--border);
+  border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;
+}
+.btn-cancel:hover{background:#e0e4ea;}
+.btn-confirm{
+  flex:1;padding:13px;background:var(--red);color:white;border:none;
+  border-radius:8px;font-size:14px;font-weight:800;cursor:pointer;transition:background .2s;
+}
+.btn-confirm:hover{background:#a50f28;}
+.btn-confirm-blue{
+  flex:1;padding:13px;background:var(--blue-dark);color:white;border:none;
+  border-radius:8px;font-size:14px;font-weight:800;cursor:pointer;
+}
+
+/* ─── SUBMITTED SCREEN ─── */
+#submittedScreen{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,#001a52 0%,#003fa3 60%,#005fc7 100%);
+  padding:20px;
+}
+.submitted-card{
+  background:white;border-radius:16px;padding:44px 40px 36px;
+  width:100%;max-width:520px;text-align:center;
+  box-shadow:0 24px 80px rgba(0,0,0,.35);
+}
+.submitted-icon{font-size:64px;margin-bottom:16px;}
+.submitted-title{font-size:26px;font-weight:900;color:var(--blue-dark);margin-bottom:6px;}
+.submitted-sub{font-size:14px;color:#888;margin-bottom:26px;line-height:1.5;}
+.info-grid{
+  background:#f5f7fa;border:1px solid var(--border);border-radius:10px;
+  padding:16px 18px;margin-bottom:26px;text-align:left;
+}
+.info-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:5px 0;font-size:13px;border-bottom:1px solid #eee;
+}
+.info-row:last-child{border-bottom:none;}
+.info-row .lbl{font-weight:700;color:#444;}
+.info-row .val{color:#222;}
+.info-row .val.ok{color:var(--green);font-weight:600;}
+.info-row .val.low{color:var(--red);font-weight:600;}
+
+.action-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:14px;font-size:14.5px;font-weight:800;border:none;
+  border-radius:9px;cursor:pointer;margin-bottom:10px;transition:opacity .2s;
+  text-decoration:none;letter-spacing:.5px;
+}
+.action-btn:hover{opacity:.88;}
+.btn-pdf{background:var(--blue-dark);color:white;}
+.btn-gmail{background:#ea4335;color:white;}
+.email-footnote{font-size:11.5px;color:#aaa;margin-top:8px;line-height:1.6;}
+.submitted-seal{
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--border);
+  font-size:11px;color:#ccc;letter-spacing:1px;text-transform:uppercase;
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN SCREEN
+════════════════════════════════════════════ -->
+<div id="loginScreen" class="screen" style="display:flex;">
+  <div class="login-card">
+    <div class="login-title">IELTS WRITING MOCK TEST</div>
+    <div class="login-sub">Huong Stella Paradigm</div>
+
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="inputName">Full Name</label>
+        <input class="form-input" type="text" id="inputName" placeholder="Enter your full name" autocomplete="off" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inputDOB">Date of Birth</label>
+        <input class="form-input" type="date" id="inputDOB" required>
+      </div>
+      <button type="submit" class="btn-begin">Begin Test ›</button>
+    </form>
+    <p class="login-note">
+      <strong>Writing Module</strong> · 2 Tasks · 60 Minutes Total<br>
+      Task 1 (~20 min) · Task 2 (~40 min)
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TEST SCREEN
+════════════════════════════════════════════ -->
+<div id="testScreen" class="screen">
+
+  <!-- Header -->
+  <header class="test-header">
+    <div class="hdr-left">
+      <div class="hdr-title">IELTS &nbsp;·&nbsp; Writing Mock Test 1</div>
+      <div class="hdr-student" id="hdrStudent">&nbsp;</div>
+    </div>
+    <div class="hdr-right">
+      <div class="timer-wrap">
+        <div class="timer-label">Time Remaining</div>
+        <div class="timer-val" id="timerVal">60:00</div>
+      </div>
+      <button id="hdrSubmitBtn" class="btn-submit-hdr" onclick="openConfirmModal()" style="display:none;">Submit Test</button>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tabs-bar">
+    <div class="tab-btn active" id="tab1Btn" onclick="switchTab(1)">
+      Task 1 &nbsp;—&nbsp; Graph Report&nbsp;&nbsp;(≈20 min)
+    </div>
+    <div class="tab-btn" id="tab2Btn" onclick="switchTab(2)">
+      Task 2 &nbsp;—&nbsp; Opinion Essay&nbsp;&nbsp;(≈40 min)
+    </div>
+  </div>
+
+  <!-- ── TASK 1 PANE ── -->
+  <div id="pane1" class="task-pane active">
+    <div class="task-top-box">
+      <div class="task-heading">WRITING TASK 1</div>
+      <div class="task-prompt">
+        <p><em>The graph below gives information about the number of jobs in four sectors of the economy in the US between 1960 and 2020.</em></p>
+        <p><em>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</em></p>
+      </div>
+      <div class="task-meta">
+        <div class="task-timing">⏱ Recommended time: <span>about 20 minutes</span></div>
+        <div class="task-minwords">✍ Write at least 150 words</div>
+      </div>
+    </div>
+
+    <div class="graph-box">
+      <div class="graph-box-title">Number of jobs in four sectors of the economy in the US, 1960–2020</div>
+      <div class="chart-wrap">
+        <canvas id="jobsChart"></canvas>
+      </div>
+    </div>
+
+    <div class="answer-box">
+      <div class="answer-box-title">Your Answer — Task 1</div>
+      <textarea class="answer-textarea" id="ans1"
+        placeholder=""
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+        oninput="refreshWC(1)"></textarea>
+      <div class="wc-row">
+        <div class="wc-badge low" id="wc1">✎ 0 words</div>
+        <div class="wc-hint">Minimum 150 words required</div>
+      </div>
+    </div>
+    <div class="task-nav-row">
+      <button class="btn-nav btn-nav-next" onclick="switchTab(2)">Continue to Task 2 &nbsp;›</button>
+    </div>
+  </div>
+
+  <!-- ── TASK 2 PANE ── -->
+  <div id="pane2" class="task-pane">
+    <div class="task-top-box">
+      <div class="task-heading">WRITING TASK 2</div>
+      <div class="task-prompt">
+        <p><em>The best way to provide enough homes in large cities is to build tall apartment blocks.</em></p>
+        <p><em>To what extent do you agree or disagree with this statement?</em></p>
+      </div>
+      <p style="font-size:13.5px;color:#555;margin:10px 0 0;line-height:1.6;">
+        Give reasons for your answer and include any relevant examples from your own knowledge or experience.
+      </p>
+      <div class="task-meta" style="margin-top:12px;">
+        <div class="task-timing">⏱ Recommended time: <span>about 40 minutes</span></div>
+        <div class="task-minwords">✍ Write at least 250 words</div>
+      </div>
+    </div>
+
+    <div class="answer-box">
+      <div class="answer-box-title">Your Answer — Task 2</div>
+      <textarea class="answer-textarea" id="ans2" style="min-height:440px;"
+        placeholder=""
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+        oninput="refreshWC(2)"></textarea>
+      <div class="wc-row">
+        <div class="wc-badge low" id="wc2">✎ 0 words</div>
+        <div class="wc-hint">Minimum 250 words required</div>
+      </div>
+    </div>
+    <div class="task-nav-row">
+      <button class="btn-nav btn-nav-back" onclick="switchTab(1)">‹ &nbsp;Back to Task 1</button>
+    </div>
+  </div>
+
+</div><!-- #testScreen -->
+
+<!-- ══════════════════════════════════════════
+     SUBMITTED SCREEN
+════════════════════════════════════════════ -->
+<div id="submittedScreen" class="screen">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#001a52 0%,#003fa3 60%,#005fc7 100%);padding:20px;">
+    <div style="background:#fff;border-radius:16px;max-width:480px;width:100%;text-align:center;padding:48px 40px;box-shadow:0 24px 80px rgba(0,0,0,.35);">
+      <div style="font-size:64px;margin-bottom:16px">✅</div>
+      <h2 style="font-size:26px;font-weight:900;color:#002d72;margin-bottom:10px;">Bài thi đã hoàn thành!</h2>
+      <p id="resultCandidateInfo" style="font-size:14px;color:#666;margin-bottom:20px;"></p>
+      <div style="background:#f0f7ff;border:1px solid #c3d9f5;border-radius:10px;padding:16px 20px;font-size:14px;color:#1a3a6e;line-height:1.7;margin-bottom:20px;">
+        Bài làm của bạn đã được ghi nhận và<br><strong>tự động gửi đến giáo viên</strong>.
+      </div>
+      <div id="emailStatus" style="font-size:13px;color:#888;margin-top:4px;">✉ Đang gửi bài làm đến giáo viên…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: Confirm Submit ── -->
+<div class="modal-bg" id="modalConfirm">
+  <div class="modal">
+    <div class="modal-icon">📝</div>
+    <h3>Submit Your Test?</h3>
+    <p>Once submitted you cannot edit your answers. Make sure you have completed both tasks before continuing.</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('modalConfirm')">Keep Writing</button>
+      <button class="btn-confirm" onclick="doSubmit()">Submit Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: Time Up ── -->
+<div class="modal-bg" id="modalTimeUp">
+  <div class="modal">
+    <div class="modal-icon">⏰</div>
+    <h3>Time's Up!</h3>
+    <p>Your 60-minute test period has ended. Your answers are being submitted automatically.</p>
+    <div class="modal-btns">
+      <button class="btn-confirm-blue" onclick="doSubmit()">Submit My Answers</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     JAVASCRIPT
+═════════════════════════════════ -->
+<script>
+// ── State ──
+const S = { name:'', dob:'', submitTime:'', pdfDoc:null };
+let secondsLeft = 3600;
+let timerTick   = null;
+
+// ── Helpers ──
+function showScreen(id) {
+  ['loginScreen','testScreen','submittedScreen'].forEach(s => {
+    const el = document.getElementById(s);
+    if (s === id) {
+      el.style.display = (s === 'testScreen') ? 'block' : 'flex';
+    } else {
+      el.style.display = 'none';
+    }
+  });
+}
+
+function countWords(str) {
+  return str.trim() === '' ? 0 : str.trim().split(/\s+/).length;
+}
+
+function fmtDate(ymd) {
+  if (!ymd) return '';
+  const d = new Date(ymd + 'T00:00:00');
+  return d.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+}
+
+// ── Login ──
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name = document.getElementById('inputName').value.trim();
+  const dob  = document.getElementById('inputDOB').value;
+  if (!name) { alert('Please enter your full name.'); return; }
+  if (!dob)  { alert('Please enter your date of birth.'); return; }
+  S.name = name;
+  S.dob  = dob;
+  document.getElementById('hdrStudent').textContent = '👤  ' + name;
+  showScreen('testScreen');
+  buildChart();
+  startTimer();
+});
+
+// ── Timer ──
+function startTimer() {
+  timerTick = setInterval(() => {
+    secondsLeft--;
+    renderTimer();
+    if (secondsLeft <= 0) {
+      clearInterval(timerTick);
+      document.getElementById('modalTimeUp').classList.add('show');
+    }
+  }, 1000);
+}
+
+function renderTimer() {
+  const m = Math.floor(secondsLeft / 60);
+  const s = secondsLeft % 60;
+  const el = document.getElementById('timerVal');
+  el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  el.className = 'timer-val';
+  if (secondsLeft <= 300) el.classList.add('crit');
+  else if (secondsLeft <= 600) el.classList.add('warn');
+}
+
+// ── Tabs ──
+function switchTab(n) {
+  [1,2].forEach(i => {
+    document.getElementById('pane'+i).classList.toggle('active', i===n);
+    document.getElementById('tab'+i+'Btn').classList.toggle('active', i===n);
+  });
+  document.getElementById('hdrSubmitBtn').style.display = (n === 2) ? 'inline-block' : 'none';
+}
+
+// ── Word count ──
+function refreshWC(n) {
+  const txt = document.getElementById('ans'+n).value;
+  const count = countWords(txt);
+  const min = n === 1 ? 150 : 250;
+  const el = document.getElementById('wc'+n);
+  el.textContent = '✎ ' + count + ' word' + (count!==1?'s':'');
+  el.className = 'wc-badge ' + (count >= min ? 'ok' : 'low');
+}
+
+// ── Modals ──
+function openConfirmModal() { document.getElementById('modalConfirm').classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// ── Apps Script URL ──
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdPPd7LyO1Wr2I1GgkkHB09f0YIRD2gOCMCGmkOocpYlQov_6mPqdut9f-uxxvO448/exec';
+
+// ── Submit ──
+function doSubmit() {
+  clearInterval(timerTick);
+  ['modalConfirm','modalTimeUp'].forEach(id => closeModal(id));
+
+  const now = new Date();
+  S.submitTime = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+
+  const t1w = countWords(document.getElementById('ans1').value);
+  const t2w = countWords(document.getElementById('ans2').value);
+
+  // Show completion screen
+  const dateStr = now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('resultCandidateInfo').textContent =
+    S.name + '  ·  ' + fmtDate(S.dob) + '  ·  ' + dateStr;
+
+  showScreen('submittedScreen');
+
+  // Build PDF then send
+  setTimeout(() => {
+    sendToTeacher();
+  }, 1500);
+}
+
+// ── PDF ──
+function buildPDFDoc() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const W = 210, H = 297, M = 18, CW = W - M*2;
+  let y = 0;
+
+  // Cover band
+  doc.setFillColor(0,45,114);
+  doc.rect(0,0,W,34,'F');
+  doc.setFillColor(200,164,0);
+  doc.rect(0,34,W,1.5,'F');
+
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(20);
+  doc.text('IELTS Writing Mock Test 1', W/2, 13, {align:'center'});
+  doc.setFontSize(10);
+  doc.setFont('helvetica','normal');
+  doc.text('Student Result Report  ·  Huong Stella Paradigm', W/2, 22, {align:'center'});
+  doc.setFontSize(9);
+  doc.text('Submitted: ' + S.submitTime, W/2, 29, {align:'center'});
+
+  y = 44;
+
+  // Candidate box
+  const infoH = 38;
+  doc.setFillColor(240,244,252);
+  doc.setDrawColor(0,45,114);
+  doc.setLineWidth(0.6);
+  doc.roundedRect(M, y, CW, infoH, 2, 2, 'FD');
+
+  doc.setTextColor(0,45,114);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(9);
+  doc.text('CANDIDATE INFORMATION', M+5, y+7);
+
+  doc.setTextColor(40,40,40);
+  doc.setFontSize(10);
+  const now = new Date();
+  const rows = [
+    ['Full Name',    S.name],
+    ['Date of Birth',fmtDate(S.dob)],
+    ['Test Date',    now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})],
+    ['Submitted At', S.submitTime],
+  ];
+  const half = CW/2;
+  rows.forEach((r, i) => {
+    const col = i < 2 ? 0 : 1;
+    const row = i % 2;
+    const rx = M + 5 + col * half;
+    const ry = y + 14 + row * 9;
+    doc.setFont('helvetica','bold');
+    doc.text(r[0]+': ', rx, ry);
+    const lw = doc.getTextWidth(r[0]+': ');
+    doc.setFont('helvetica','normal');
+    doc.text(r[1], rx + lw, ry);
+  });
+
+  y += infoH + 10;
+
+  const t1txt = document.getElementById('ans1').value.trim();
+  const t1w   = countWords(t1txt);
+  const t2txt = document.getElementById('ans2').value.trim();
+  const t2w   = countWords(t2txt);
+
+  function sectionHeader(label, words, color) {
+    if (y > H - 40) { doc.addPage(); y = M; }
+    doc.setFillColor(...color);
+    doc.rect(M, y, CW, 11, 'F');
+    doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.text(label, M+5, y+7.5);
+    doc.text(words + ' words', W-M-3, y+7.5, {align:'right'});
+    y += 14;
+  }
+
+  function promptBox(lines) {
+    const boxH = lines.length * 6 + 10;
+    if (y + boxH > H - M) { doc.addPage(); y = M; }
+    doc.setFillColor(255,253,235);
+    doc.setDrawColor(180,150,0);
+    doc.setLineWidth(0.4);
+    doc.rect(M, y, CW, boxH, 'FD');
+    doc.setTextColor(60,44,0);
+    doc.setFont('helvetica','bolditalic');
+    doc.setFontSize(9);
+    lines.forEach((ln, i) => doc.text(ln, M+5, y + 7 + i*6));
+    y += boxH + 6;
+  }
+
+  function writeText(txt) {
+    if (!txt) {
+      doc.setTextColor(170,170,170);
+      doc.setFont('helvetica','italic');
+      doc.setFontSize(10.5);
+      doc.text('[No answer provided]', M+5, y);
+      y += 9;
+      return;
+    }
+    doc.setTextColor(25,25,25);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10.5);
+    const lines = doc.splitTextToSize(txt, CW - 8);
+    lines.forEach(ln => {
+      if (y > H - M - 6) { doc.addPage(); y = M; }
+      doc.text(ln, M+4, y);
+      y += 6.2;
+    });
+  }
+
+  sectionHeader('WRITING TASK 1  —  Graph Report', t1w, [0,87,183]);
+  promptBox([
+    'The graph below gives information about the number of jobs in four sectors of the economy in the US',
+    'between 1960 and 2020. Summarise the information by selecting and reporting the main features,',
+    'and make comparisons where relevant.',
+  ]);
+  writeText(t1txt);
+
+  y += 10;
+  if (y > H - 60) { doc.addPage(); y = M; }
+
+  sectionHeader('WRITING TASK 2  —  Opinion Essay', t2w, [196,18,48]);
+  promptBox([
+    'The best way to provide enough homes in large cities is to build tall apartment blocks.',
+    'To what extent do you agree or disagree with this statement? Give reasons for your answer',
+    'and include any relevant examples from your own knowledge or experience.',
+  ]);
+  writeText(t2txt);
+
+  // Footer on every page
+  const total = doc.internal.getNumberOfPages();
+  for (let p = 1; p <= total; p++) {
+    doc.setPage(p);
+    doc.setFillColor(0,45,114);
+    doc.rect(0, H-11, W, 11, 'F');
+    doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+    doc.text('IELTS Writing Mock Test 1  ·  Huong Stella Paradigm  ·  ' + S.name, M, H-4);
+    doc.text('Page '+p+' of '+total, W-M, H-4, {align:'right'});
+  }
+
+  return doc;
+}
+
+// ── Send to teacher ──
+function sendToTeacher() {
+  const t1txt  = document.getElementById('ans1').value.trim();
+  const t2txt  = document.getElementById('ans2').value.trim();
+  const t1words = countWords(t1txt);
+  const t2words = countWords(t2txt);
+  const now    = new Date();
+  const date   = now.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  const doc        = buildPDFDoc();
+  const pdfBase64  = doc.output('datauristring').split(',')[1];
+
+  const payload = {
+    testType:  'writing',
+    name:      S.name,
+    dob:       fmtDate(S.dob),
+    date:      date,
+    testName:  'IELTS Writing Mock Test 1',
+    t1words:   t1words,
+    t2words:   t2words,
+    t1text:    t1txt,
+    t2text:    t2txt,
+    pdf:       pdfBase64
+  };
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.json())
+  .then(res => {
+    const el = document.getElementById('emailStatus');
+    if (res.status === 'ok') {
+      el.textContent = '✅ Đã gửi thành công đến giáo viên!';
+      el.style.color = '#1e7b3b';
+    } else {
+      el.textContent = '⚠ Lỗi khi gửi: ' + (res.message || 'Unknown error');
+      el.style.color = '#c41230';
+    }
+  })
+  .catch(err => {
+    const el = document.getElementById('emailStatus');
+    el.textContent = '⚠ Không thể gửi: ' + err.message;
+    el.style.color = '#c41230';
+  });
+}
+
+// ── Chart ──
+function buildChart() {
+  const ctx = document.getElementById('jobsChart').getContext('2d');
+
+  // Custom point draw helpers for Chart.js v4
+  const drawDiamond = (ctx, x, y, r) => {
+    ctx.beginPath();
+    ctx.moveTo(x, y - r);
+    ctx.lineTo(x + r, y);
+    ctx.lineTo(x, y + r);
+    ctx.lineTo(x - r, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  };
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['1960','1980','2000','2020'],
+      datasets: [
+        {
+          label: 'Manufacturing',
+          data: [15, 20, 15, 12],
+          borderColor: '#111',
+          backgroundColor: '#fff',
+          borderWidth: 2.5,
+          borderDash: [],
+          pointStyle: 'circle',
+          pointRadius: 7,
+          pointBorderWidth: 2.5,
+          pointBackgroundColor: '#fff',
+          pointBorderColor: '#111',
+          pointHoverRadius: 9,
+          tension: 0, fill: false,
+        },
+        {
+          label: 'Retail',
+          data: [5, 10, 15, 15],
+          borderColor: '#444',
+          backgroundColor: '#444',
+          borderWidth: 2.2,
+          borderDash: [9,5],
+          pointStyle: 'triangle',
+          pointRadius: 8,
+          pointBorderWidth: 2,
+          pointBackgroundColor: '#444',
+          pointBorderColor: '#444',
+          pointHoverRadius: 10,
+          tension: 0, fill: false,
+        },
+        {
+          label: 'Agriculture',
+          data: [5, 3, 2, 1],
+          borderColor: '#555',
+          backgroundColor: '#555',
+          borderWidth: 2,
+          borderDash: [10,4,2,4],
+          pointStyle: 'rect',
+          pointRadius: 6,
+          pointBorderWidth: 2,
+          pointBackgroundColor: '#555',
+          pointBorderColor: '#555',
+          pointHoverRadius: 8,
+          tension: 0, fill: false,
+        },
+        {
+          label: 'Healthcare',
+          data: [1, 5, 10, 15],
+          borderColor: '#888',
+          backgroundColor: '#888',
+          borderWidth: 2,
+          borderDash: [3,5],
+          pointStyle: 'rectRot',
+          pointRadius: 7,
+          pointBorderWidth: 2,
+          pointBackgroundColor: '#888',
+          pointBorderColor: '#888',
+          pointHoverRadius: 9,
+          tension: 0, fill: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode:'index', intersect:false },
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            usePointStyle: true,
+            pointStyleWidth: 22,
+            font: { size:12.5 },
+            padding: 18,
+            color: '#222',
+            boxHeight: 12,
+          },
+        },
+        tooltip: { enabled: false },
+      },
+      scales: {
+        x: {
+          title: {
+            display: true, text: 'Year',
+            font: { size:13, weight:'700' }, color:'#333',
+            padding: { top:8 },
+          },
+          ticks: { font:{ size:12 }, color:'#444' },
+          grid: { color:'rgba(0,0,0,.07)' },
+          border: { color:'#aaa' },
+        },
+        y: {
+          min: 0, max: 25,
+          ticks: {
+            stepSize: 5,
+            font: { size:12 }, color:'#444',
+            callback: v => v,
+          },
+          title: {
+            display: true, text: 'Jobs in millions',
+            font: { size:13, weight:'700' }, color:'#333',
+            padding: { bottom:8 },
+          },
+          grid: { color:'rgba(0,0,0,.07)' },
+          border: { color:'#aaa' },
+        },
+      },
+    },
+  });
+}
+</script>
+</body>
+</html>
