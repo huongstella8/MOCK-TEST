@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Reading Mock Test 6 – Huong Stella Paradigm</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#f0f4f8;overflow:hidden}
+#loginScreen{position:fixed;inset:0;background:linear-gradient(145deg,#001a52 0%,#003fa3 60%,#005fc7 100%);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-card{background:#fff;border-radius:16px;padding:44px 40px 36px;width:100%;max-width:460px;box-shadow:0 24px 80px rgba(0,0,0,.35)}
+.login-title{font-size:21px;font-weight:800;color:#002d72;text-align:center;margin-bottom:4px}
+.login-sub{font-size:13px;color:#888;text-align:center;margin-bottom:16px}
+.login-card label{display:block;font-size:11px;font-weight:700;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.login-card input{width:100%;padding:13px 15px;border:2px solid #dde2ea;border-radius:9px;font-size:15px;margin-bottom:18px;transition:border-color .2s,box-shadow .2s;font-family:inherit;color:#222;outline:none}
+.login-card input:focus{border-color:#0057b7;box-shadow:0 0 0 3px rgba(0,87,183,.12)}
+.btn-start{width:100%;padding:15px;background:#002d72;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;transition:background .2s,transform .1s;margin-top:6px}
+.btn-start:hover{background:#0057b7}
+.btn-start:active{transform:scale(.98)}
+.login-note{font-size:12px;color:#bbb;text-align:center;margin-top:16px;line-height:1.6}
+.err{color:#dc3545;font-size:12px;margin-top:-12px;margin-bottom:10px;display:none}
+#examScreen{display:none;flex-direction:column;height:100vh}
+.top-bar{background:#001840;color:#fff;padding:0 22px;display:flex;align-items:center;justify-content:space-between;height:58px;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.top-bar .left-info .logo{font-size:17px;font-weight:900;letter-spacing:1px}
+.top-bar .left-info .sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:1px}
+.timer-wrap{display:flex;align-items:center;gap:10px}
+.timer-label{font-size:10px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px}
+#timerDisplay{font-size:26px;font-weight:900;font-family:monospace;letter-spacing:3px;color:#fff;transition:color .3s}
+#timerDisplay.warn{color:#ffd700}
+#timerDisplay.danger{color:#ff4444;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.btn-submit{background:rgba(255,255,255,.18);color:rgba(255,255,255,.85);border:1.5px solid rgba(255,255,255,.3);padding:10px 22px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px}
+.btn-submit:hover{background:rgba(255,255,255,.28);color:#fff}
+.tabs-bar{background:#00264d;display:flex;align-items:flex-end;padding:0 22px;flex-shrink:0;height:46px;gap:4px}
+.tab-btn{background:rgba(255,255,255,.1);color:rgba(255,255,255,.65);border:none;padding:7px 18px;border-radius:6px 6px 0 0;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;height:38px;display:inline-flex;align-items:center;gap:7px}
+.tab-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.tab-btn.active{background:#fff;color:#001840}
+.tab-badge{background:rgba(255,255,255,.2);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700}
+.tab-btn.active .tab-badge{background:#001840;color:#fff}
+.tab-btn.complete .tab-badge{background:#28a745;color:#fff}
+.student-bar{margin-left:auto;align-self:center;color:rgba(255,255,255,.55);font-size:11px}
+.passage-wrap{display:flex;flex:1;overflow:hidden;height:calc(100vh - 104px)}
+.left-panel{flex:0 0 50%;border-right:3px solid #d4dde8;overflow-y:auto;padding:28px 26px;background:#fff;font-size:14.5px;line-height:1.85;color:#1a1a1a}
+.right-panel{flex:0 0 50%;overflow-y:auto;padding:24px 22px;background:#f5f7fa}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#f0f4f8}
+::-webkit-scrollbar-thumb{background:#b0c4de;border-radius:3px}
+.p-label{font-size:11px;font-weight:800;color:#0055a4;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.p-instruction{font-size:12.5px;font-style:italic;color:#555;background:#f0f5ff;border-left:3px solid #0055a4;padding:9px 13px;border-radius:0 5px 5px 0;margin-bottom:20px;line-height:1.5}
+.p-title{font-size:22px;font-weight:900;color:#001840;text-align:center;margin-bottom:6px}
+.p-subtitle{font-size:13px;font-style:italic;color:#666;text-align:center;margin-bottom:20px}
+.p-text p{margin-bottom:14px}
+.p-text .para-id{font-weight:900;color:#0055a4;margin-right:8px;font-size:14px}
+.p-section{font-size:14px;font-weight:800;color:#001840;margin:18px 0 8px}
+.q-block{margin-bottom:28px}
+.q-head{background:#001840;color:#fff;padding:10px 15px;border-radius:7px;margin-bottom:14px}
+.q-head h3{font-size:13px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.q-head .q-inst{font-size:12.5px;color:rgba(255,255,255,.75);margin-top:4px;font-style:italic;line-height:1.4}
+.q-note{font-size:13px;font-style:italic;color:#555;background:#fff;border-left:3px solid #0055a4;padding:8px 12px;border-radius:0 5px 5px 0;margin-bottom:14px;line-height:1.5}
+.q-note strong{color:#001840}
+hr.divider{border:none;border-top:2px dashed #d4dde8;margin:22px 0}
+.tfng-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:#fff;border-radius:7px;margin-bottom:7px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:2px solid transparent;transition:border-color .2s}
+.tfng-qn{font-weight:800;color:#0055a4;min-width:22px;font-size:15px;padding-top:1px}
+.tfng-txt{flex:1;font-size:14px;line-height:1.5}
+.tfng-opts{display:flex;gap:5px;flex-shrink:0}
+.tfng-btn{padding:5px 8px;border:2px solid #dde3ed;border-radius:5px;font-size:11px;font-weight:800;cursor:pointer;background:#fff;transition:all .15s;white-space:nowrap}
+.tfng-btn:hover{border-color:#0055a4;color:#0055a4}
+.tfng-btn.sel{background:#001840;color:#fff;border-color:#001840}
+.yng-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:#fff;border-radius:7px;margin-bottom:7px;box-shadow:0 1px 4px rgba(0,0,0,.07);border:2px solid transparent}
+.yng-qn{font-weight:800;color:#0055a4;min-width:22px;font-size:15px;padding-top:1px}
+.yng-txt{flex:1;font-size:14px;line-height:1.5}
+.yng-opts{display:flex;gap:5px;flex-shrink:0}
+.yng-btn{padding:5px 8px;border:2px solid #dde3ed;border-radius:5px;font-size:11px;font-weight:800;cursor:pointer;background:#fff;transition:all .15s;white-space:nowrap}
+.yng-btn:hover{border-color:#0055a4;color:#0055a4}
+.yng-btn.sel{background:#001840;color:#fff;border-color:#001840}
+.match-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:#fff;border-radius:7px;margin-bottom:7px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.match-qn{font-weight:800;color:#0055a4;min-width:22px;font-size:15px;padding-top:2px}
+.match-txt{flex:1;font-size:14px;line-height:1.5}
+.match-sel{border:2px solid #dde3ed;border-radius:5px;padding:5px 8px;font-size:14px;font-weight:700;color:#001840;cursor:pointer;outline:none;transition:border-color .2s;min-width:56px}
+.match-sel:focus{border-color:#0055a4}
+.q-n{font-weight:800;color:#0055a4;margin-right:4px}
+.ans-input{border:none;border-bottom:2px solid #0055a4;background:transparent;font-size:14px;width:115px;padding:2px 4px;color:#001840;outline:none;font-family:inherit;transition:border-color .2s}
+.ans-input:focus{border-bottom-color:#e8380d}
+.summary-box{font-size:14px;line-height:2.2;background:#fff;padding:14px 16px;border-radius:7px;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:12px}
+.summary-box p{margin-bottom:10px;line-height:2.2}
+.summary-box .sum-title{font-weight:800;color:#001840;margin-bottom:8px;font-size:13.5px}
+.word-bank{background:#fff;border:2px solid #dde3ed;border-radius:7px;padding:11px 13px;margin-bottom:14px}
+.wb-title{font-size:12px;font-weight:800;color:#0055a4;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.wb-grid{display:flex;flex-wrap:wrap;gap:5px}
+.wb-item{background:#f0f5ff;border:1px solid #b3c8e8;border-radius:4px;padding:3px 9px;font-size:13px;font-weight:700;color:#001840}
+.endings-box{background:#fff;border:2px solid #dde3ed;border-radius:7px;padding:11px 13px;margin-bottom:14px}
+.endings-title{font-size:12px;font-weight:800;color:#0055a4;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.end-item{display:flex;gap:8px;padding:5px 0;font-size:13px;line-height:1.5;border-bottom:1px solid #f0f4f8}
+.end-item:last-child{border-bottom:none}
+.end-letter{font-weight:800;color:#0055a4;flex-shrink:0;min-width:18px}
+.mc-q{padding:10px 13px;background:#fff;border-radius:7px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.mc-q-text{font-size:14px;font-weight:700;color:#222;line-height:1.5;margin-bottom:10px}
+.mc-q-num{color:#0055a4;margin-right:6px}
+.mc-opt{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border:2px solid #e8edf4;border-radius:5px;margin-bottom:5px;cursor:pointer;font-size:14px;transition:all .15s;line-height:1.4}
+.mc-opt:hover{border-color:#0055a4}
+.mc-opt.sel{border-color:#001840;background:#f0f4ff}
+.mc-opt input[type=radio]{margin-top:2px;cursor:pointer;flex-shrink:0}
+.mc-opt label{cursor:pointer}
+.mc-letter{font-weight:800;color:#0055a4;margin-right:5px}
+.passage-nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0 6px;margin-top:10px;border-top:2px dashed #d4dde8}
+.nav-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;border:2px solid #001840;background:#fff;color:#001840;transition:all .2s}
+.nav-btn:hover{background:#001840;color:#fff}
+.nav-btn.next{background:#001840;color:#fff;border-color:#001840}
+.nav-btn.next:hover{background:#0055a4;border-color:#0055a4}
+.nav-spacer{flex:1}
+mark.hl-yellow{background:#fff176;color:inherit;border-radius:2px;cursor:pointer;transition:filter .15s}
+mark.hl-green{background:#b9f6ca;color:inherit;border-radius:2px;cursor:pointer;transition:filter .15s}
+mark.hl-pink{background:#fce4ec;color:inherit;border-radius:2px;cursor:pointer;transition:filter .15s}
+mark.hl-blue{background:#bbdefb;color:inherit;border-radius:2px;cursor:pointer;transition:filter .15s}
+mark[class^="hl-"]:hover{filter:brightness(.88)}
+.hl-toolbar{position:fixed;background:#1a1a2e;border-radius:9px;padding:7px 10px;display:none;flex-direction:row;gap:7px;align-items:center;z-index:9000;box-shadow:0 6px 24px rgba(0,0,0,.45);user-select:none}
+.hl-toolbar::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:#1a1a2e;border-bottom:none}
+.hl-color{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.25);cursor:pointer;flex-shrink:0;transition:transform .15s,border-color .15s}
+.hl-color:hover{transform:scale(1.25);border-color:#fff}
+.hl-sep{width:1px;height:18px;background:rgba(255,255,255,.2);flex-shrink:0}
+.hl-label{font-size:10px;color:rgba(255,255,255,.55);white-space:nowrap;letter-spacing:.3px}
+.hl-erase-btn{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.3);color:#fff;border-radius:5px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s}
+.hl-erase-btn:hover{background:rgba(255,80,80,.4);border-color:rgba(255,100,100,.6)}
+.hl-hint{background:#fffde7;border:1.5px solid #f9c333;border-radius:7px;padding:8px 12px;font-size:12px;color:#555;margin-bottom:14px;display:flex;align-items:flex-start;gap:9px;line-height:1.5}
+.hl-hint-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.hl-swatches{display:flex;gap:4px;margin-top:5px}
+.hl-swatch{width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(0,0,0,.12)}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#001840;color:#fff;padding:12px 26px;border-radius:8px;font-size:13px;z-index:9998;box-shadow:0 4px 16px rgba(0,0,0,.3);display:none;animation:fadeup .3s ease}
+@keyframes fadeup{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+#confirmModal{display:none;position:fixed;inset:0;background:rgba(0,0,32,.6);z-index:9997;align-items:center;justify-content:center}
+.modal-card{background:#fff;border-radius:12px;padding:32px;width:360px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.modal-card h2{font-size:20px;color:#001840;margin-bottom:10px}
+.modal-card p{font-size:13px;color:#666;margin-bottom:22px;line-height:1.5}
+.modal-btns{display:flex;gap:10px;justify-content:center}
+.modal-btns button{padding:10px 24px;border-radius:7px;font-size:14px;font-weight:800;cursor:pointer;border:none;transition:background .2s}
+.btn-cancel{background:#e8edf4;color:#444}
+.btn-cancel:hover{background:#d4dde8}
+.btn-confirm{background:#001840;color:#fff}
+.btn-confirm:hover{background:#0055a4}
+#timeupModal{display:none;position:fixed;inset:0;background:rgba(0,0,32,.7);z-index:9998;align-items:center;justify-content:center}
+.timeup-card{background:#fff;border-radius:12px;padding:40px;width:380px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.timeup-card .big{font-size:48px;margin-bottom:10px}
+.timeup-card h2{font-size:22px;color:#001840;margin-bottom:10px;font-weight:900}
+.timeup-card p{font-size:14px;color:#666;margin-bottom:24px}
+.btn-score-now{background:#e8380d;color:#fff;border:none;padding:13px 32px;border-radius:8px;font-size:15px;font-weight:800;cursor:pointer;width:100%}
+.btn-score-now:hover{background:#c42d0a}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<!-- DRAFT RESTORE MODAL -->
+<div id="modalDraft" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10000;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:14px;padding:36px 32px;max-width:420px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.25)">
+    <div style="font-size:50px;margin-bottom:12px">💾</div>
+    <h3 style="margin:0 0 10px;font-size:20px;color:#001840">Unsaved answers found!</h3>
+    <p style="color:#444;font-size:14.5px;line-height:1.6;margin:0 0 22px">Found an unfinished attempt by <strong id="draftName"></strong> saved at <strong id="draftTime"></strong>.<br>Would you like to continue from where you left off?</p>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button onclick="discardReadingDraft()" style="padding:10px 22px;border:2px solid #bbb;border-radius:8px;background:#fff;color:#555;font-size:14px;cursor:pointer;font-weight:600">Start Fresh</button>
+      <button onclick="restoreReadingDraft()" style="padding:10px 22px;border:none;border-radius:8px;background:#001840;color:#fff;font-size:14px;cursor:pointer;font-weight:700">Restore Answers</button>
+    </div>
+  </div>
+</div>
+
+<!-- HIGHLIGHT TOOLBAR -->
+<div class="hl-toolbar" id="hlToolbar">
+  <span class="hl-label">Highlight:</span>
+  <div class="hl-color" style="background:#fff176" onclick="applyHL('yellow')"></div>
+  <div class="hl-color" style="background:#b9f6ca" onclick="applyHL('green')"></div>
+  <div class="hl-color" style="background:#fce4ec" onclick="applyHL('pink')"></div>
+  <div class="hl-color" style="background:#bbdefb" onclick="applyHL('blue')"></div>
+  <div class="hl-sep"></div>
+  <button class="hl-erase-btn" onclick="eraseHL()">✕ Clear</button>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,32,.6);z-index:9997;align-items:center;justify-content:center">
+  <div class="modal-card">
+    <h2>Submit Test?</h2>
+    <p>You still have <strong id="timeLeft"></strong> remaining. Are you sure you want to submit now?</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeConfirm()">Continue Test</button>
+      <button class="btn-confirm" onclick="submitTest()">Submit Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- TIME UP MODAL -->
+<div id="timeupModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,32,.7);z-index:9998;align-items:center;justify-content:center">
+  <div class="timeup-card">
+    <div class="big">⏰</div>
+    <h2>Time's Up!</h2>
+    <p>Your 60 minutes have ended. Your test will now be automatically submitted.</p>
+    <button class="btn-score-now" onclick="submitTest()">View My Results</button>
+  </div>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-title">IELTS READING MOCK TEST</div>
+    <div class="login-sub">Huong Stella Paradigm</div>
+    <label for="fullName">Full Name</label>
+    <input type="text" id="fullName" placeholder="Enter your full name" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+    <div class="err" id="nameErr">Please enter your full name.</div>
+    <label for="dob">Date of Birth</label>
+    <input type="date" id="dob">
+    <div class="err" id="dobErr">Please enter your date of birth.</div>
+    <button class="btn-start" onclick="startExam()">Begin Test ›</button>
+    <p class="login-note">Results are sent to your teacher automatically</p>
+  </div>
+</div>
+
+<!-- EXAM SCREEN -->
+<div id="examScreen" style="display:none;flex-direction:column;height:100vh">
+  <div class="top-bar">
+    <div class="left-info">
+      <div class="logo">IELTS READING MOCK TEST</div>
+      <div class="sub">Test 6</div>
+    </div>
+    <div class="timer-wrap">
+      <div>
+        <div class="timer-label">TIME REMAINING</div>
+        <div id="timerDisplay">60:00</div>
+      </div>
+    </div>
+    <button class="btn-submit" onclick="confirmSubmit()">SUBMIT TEST ✓</button>
+  </div>
+
+  <div class="tabs-bar">
+    <button class="tab-btn active" id="tab1btn" onclick="switchTab(1)">Passage 1 · Katsushika Hokusai</button>
+    <button class="tab-btn" id="tab2btn" onclick="switchTab(2)">Passage 2 · Mind Music</button>
+    <button class="tab-btn" id="tab3btn" onclick="switchTab(3)">Passage 3 · Australian Landscapes</button>
+    <div class="student-bar" id="studentBar"></div>
+  </div>
+
+  <!-- ══ PASSAGE 1 ══ -->
+  <div class="passage-wrap" id="pw1">
+    <div class="left-panel">
+      <div class="hl-hint">
+        <div class="hl-hint-icon">🖊</div>
+        <div class="hl-hint-text"><strong>Highlight:</strong> Select text → choose colour from toolbar. Click highlight to remove.
+          <div class="hl-swatches"><div class="hl-swatch" style="background:#fff176"></div><div class="hl-swatch" style="background:#b9f6ca"></div><div class="hl-swatch" style="background:#fce4ec"></div><div class="hl-swatch" style="background:#bbdefb"></div></div>
+        </div>
+      </div>
+      <div class="p-label">Reading Passage 1</div>
+      <div class="p-instruction">You should spend about 20 minutes on <strong>Questions 1–13</strong>, which are based on Reading Passage 1 below.</div>
+      <div class="p-title">Katsushika Hokusai</div>
+      <div class="p-text">
+        <p>Katsushika Hokusai (born October 1760, Edo [now Tokyo], Japan–died May 10, 1849, Edo) was a Japanese master artist and printmaker of the Ukiyo-e ("pictures of the floating world") school. His early works represent the full spectrum of Ukiyo-e art, including single-sheet prints of landscapes and actors, hand paintings, and surimono ("printed things"), such as greetings and announcements. Later he concentrated on the classical themes of the samurai and Chinese subjects. His famous print series "Thirty-six Views of Mount Fuji," published between 1826 and 1833, marked the summit in the history of the Japanese landscape print.</p>
+        <p class="p-section">Early years</p>
+        <p>Hokusai was born in the Honjo quarter just east of Edo (Tokyo) and became interested in drawing at the age of five. He was adopted in childhood by a prestigious artisan family named Nakajima but was never accepted as an heir–possibly supporting the theory that, though the true son of Nakajima, he had been born of a concubine.</p>
+        <p>Hokusai is said to have served in his youth as clerk in a lending bookshop, and from 15 to 18 years of age he was apprenticed to a wood-block engraver. This early training in the book and printing trades obviously contributed to Hokusai's artistic development as a printmaker.</p>
+        <p>The earliest contemporary record of Hokusai dates from the year 1778, when, at the age of 18, he became a pupil of the leading Ukiyo-e master, Katsukawa Shunshō. The young Hokusai's first published works appeared the following year–actor prints of the Kabuki theatre, the genre that Shunshō and the Katsukawa school practically dominated.</p>
+        <p>To judge from the ages of his several children, Hokusai must have married in his mid-20s. Possibly under the influence of family life, from this period his designs tended to turn from prints of actors and women to historical and landscape subjects, especially Uki-e (semi-historical landscapes using Western-influenced perspective techniques), as well as prints of children. At the same time, Hokusai's work in the surimono genre during the subsequent decade marks one of the early peaks in his career. Surimono were prints issued privately for special occasions–New Year's and other greetings, musical programs and announcements, private verse selections–in limited editions and featuring immaculate printing of the highest quality.</p>
+        <p>Hokusai's early 30s were to prove years of personal change. His master Shunshō died early in 1793, and somewhat later Hokusai's young wife passed away. In the year 1797 he remarried and adopted the name Hokusai. This change of name marks the beginning of the golden age of his work, which was to continue for a half century.</p>
+        <p class="p-section">Mature years</p>
+        <p>In his subject matter, Hokusai only occasionally (in a few notable prints, in paintings, and erotica) chose to compete with Utamaro, the acknowledged master of voluptuous figure prints. Hokusai's work encompassed a wide range, with particular emphasis on landscape views and historical scenes. Around the turn of the century he experimented for a time with Western-style perspective and colouring.</p>
+        <p>In about the year 1812, Hokusai's eldest son died. This tragedy was not only an emotional but also an economic event, for, as adopted heir to the affluent Nakajima family, the son had been instrumental in obtaining a generous stipend for Hokusai, so that he did not need to worry about the uncertainties of income from his paintings, designs, and illustrations.</p>
+        <p>From this time on Hokusai's attention turned gradually to the type of wood-block-printed copybook designed for amateur artists (including the famous Hokusai manga). Very likely his intention was to find new pupils and hence new patronage.</p>
+        <p class="p-section">Legacy</p>
+        <p>Of Hokusai's thousands of books and prints, his "Thirty-six Views of Mt. Fuji" is particularly notable. Published from about 1826 to 1833, this famous series (including supplements, a total of 46 colour prints) marked a summit in the history of the Japanese landscape print; in grandeur of concept and skill of execution there was little approaching it before and nothing to surpass it later.</p>
+        <p>Hokusai's frequent changes in domicile (more than 90 dwellings) and of his own name are indicative of the artist's restless nature. Besides his principal noms d'artiste (roughly one per decade), the artist had also some two dozen other occasional pseudonyms.</p>
+        <p>Hokusai embodied in his long lifetime the essence of the Ukiyo-e school of art during its final century of development. Moreover, Hokusai constitutes a figure who has, since the later 19th century, impressed Western artists, critics, and art lovers alike, more, possibly, than any other single Asian artist.</p>
+      </div>
+    </div>
+    <div class="right-panel">
+      <!-- Q1–7 TRUE/FALSE/NOT GIVEN -->
+      <div class="q-block">
+        <div class="q-head">
+          <h3>Questions 1–7</h3>
+          <div class="q-inst">Do the following statements agree with the information given in Reading Passage 1?</div>
+        </div>
+        <div class="q-note">
+          <strong>TRUE</strong> – if the statement agrees with the information<br>
+          <strong>FALSE</strong> – if the statement contradicts the information<br>
+          <strong>NOT GIVEN</strong> – if there is no information on this
+        </div>
+        <div class="tfng-item" id="row1"><div class="tfng-qn">1</div><div class="tfng-txt">Hokusai's earliest artistic works mainly focused on landscapes and actors.</div><div class="tfng-opts"><button class="tfng-btn" data-val="TRUE" onclick="setTFNG(1,'TRUE',this)">TRUE</button><button class="tfng-btn" data-val="FALSE" onclick="setTFNG(1,'FALSE',this)">FALSE</button><button class="tfng-btn" data-val="NOT GIVEN" onclick="setTFNG(1,'NOT GIVEN',this)">NG</button></div></div>
+        <div class="tfng-item" id="row2"><div class="tfng-qn">2</div><div class="tfng-txt">He was officially recognized as the heir of the Nakajima family.</div><div class="tfng-opts"><button class="tfng-btn" data-val="TRUE" onclick="setTFNG(2,'TRUE',this)">TRUE</button><button class="tfng-btn" data-val="FALSE" onclick="setTFNG(2,'FALSE',this)">FALSE</button><button class="tfng-btn" data-val="NOT GIVEN" onclick="setTFNG(2,'NOT GIVEN',this)">NG</button></div></div>
+        <div class="tfng-item" id="row3"><div class="tfng-qn">3</div><div class="tfng-txt">Hokusai's apprenticeship with a wood-block engraver contributed to his later success as a printmaker.</div><div class="tfng-opts"><button class="tfng-btn" data-val="TRUE" onclick="setTFNG(3,'TRUE',this)">TRUE</button><button class="tfng-btn" data-val="FALSE" onclick="setTFNG(3,'FALSE',this)">FALSE</button><button class="tfng-btn" data-val="NOT GIVEN" onclick="setTFNG(3,'NOT GIVEN',this)">NG</button></div></div>
+        <div class="tfng-item" id="row4"><div class="tfng-qn">4</div><div class="tfng-txt">The series Thirty-six Views of Mount Fuji was the first landscape work ever created in Japan.</div><div class="tfng-opts"><button class="tfng-btn" data-val="TRUE" onclick="setTFNG(4,'TRUE',this)">TRUE</button><button class="tfng-btn" data-val="FALSE" onclick="setTFNG(4,'FALSE',this)">FALSE</button><button class="tfng-btn" data-val="NOT GIVEN" onclick="setTFNG(4,'NOT GIVEN',this)">NG</button></div></div>
+        <div class="tfng-item" id="row5"><div class="tfng-qn">5</div><div class="tfng-txt">Hokusai often competed with Utamaro in producing prints of women.</div><div class="tfng-opts"><button class="tfng-btn" data-val="TRUE" onclick="setTFNG(5,'TRUE',this)">TRUE</button><button class="tfng-btn" data-val="FALSE" onclick="setTFNG(5,'FALSE',this)">FALSE</button><button class="tfng-btn" data-val="NOT GIVEN" onclick="setTFNG(5,'NOT GIVEN',this)">NG</button></div></div>
+        <div class="tfng-item" id="row6"><div class="tfng-qn">6</div><div class="tfng-txt">His eldest son helped secure financial stability for him through the Nakajima family connections.</div><div class="tfng-opts"><button class="tfng-btn" data-val="TRUE" onclick="setTFNG(6,'TRUE',this)">TRUE</button><button class="tfng-btn" data-val="FALSE" onclick="setTFNG(6,'FALSE',this)">FALSE</button><button class="tfng-btn" data-val="NOT GIVEN" onclick="setTFNG(6,'NOT GIVEN',this)">NG</button></div></div>
+        <div class="tfng-item" id="row7"><div class="tfng-qn">7</div><div class="tfng-txt">Hokusai changed his residence and artistic name multiple times throughout his life.</div><div class="tfng-opts"><button class="tfng-btn" data-val="TRUE" onclick="setTFNG(7,'TRUE',this)">TRUE</button><button class="tfng-btn" data-val="FALSE" onclick="setTFNG(7,'FALSE',this)">FALSE</button><button class="tfng-btn" data-val="NOT GIVEN" onclick="setTFNG(7,'NOT GIVEN',this)">NG</button></div></div>
+      </div>
+      <hr class="divider">
+      <!-- Q8–13 Summary Completion -->
+      <div class="q-block">
+        <div class="q-head">
+          <h3>Questions 8–13</h3>
+          <div class="q-inst">Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.</div>
+        </div>
+        <div class="q-note">Write <strong>one word only</strong> from the passage in each gap.</div>
+        <div class="summary-box">
+          <p>Hokusai showed interest in drawing at the age of five and may have been the son of a <span class="q-n">8</span><input type="text" class="ans-input" id="q8" placeholder="........" oninput="updateBadge()" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off">. As a teenager, he was apprenticed to a wood-block engraver, and later studied under the Ukiyo-e master Shunshō, producing actor prints of the <span class="q-n">9</span><input type="text" class="ans-input" id="q9" placeholder="........" oninput="updateBadge()" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off">.</p>
+          <p>During his career, Hokusai created a wide variety of works, including landscapes, actor prints, and <span class="q-n">10</span><input type="text" class="ans-input" id="q10" placeholder="........" oninput="updateBadge()" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"> produced for special occasions. He also published sketchbooks for amateur artists known as Hokusai <span class="q-n">11</span><input type="text" class="ans-input" id="q11" placeholder="........" oninput="updateBadge()" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off">. In many of his landscape works, he applied Western-style <span class="q-n">12</span><input type="text" class="ans-input" id="q12" placeholder="........" oninput="updateBadge()" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"> to give depth.</p>
+          <p>Although he worked in different genres, Hokusai also competed with other masters such as <span class="q-n">13</span><input type="text" class="ans-input" id="q13" placeholder="........" oninput="updateBadge()" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off">, who was famous for figure prints.</p>
+        </div>
+        <div class="passage-nav">
+          <span class="nav-spacer"></span>
+          <button class="nav-btn next" onclick="switchTab(2)">Passage 2 · Mind Music &nbsp;→</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- end pw1 -->
+
+  <!-- ══ PASSAGE 2 ══ -->
+  <div class="passage-wrap" id="pw2" style="display:none">
+    <div class="left-panel">
+      <div class="hl-hint">
+        <div class="hl-hint-icon">🖊</div>
+        <div class="hl-hint-text"><strong>Highlight:</strong> Select text → choose colour from toolbar. Click highlight to remove.
+          <div class="hl-swatches"><div class="hl-swatch" style="background:#fff176"></div><div class="hl-swatch" style="background:#b9f6ca"></div><div class="hl-swatch" style="background:#fce4ec"></div><div class="hl-swatch" style="background:#bbdefb"></div></div>
+        </div>
+      </div>
+      <div class="p-label">Reading Passage 2</div>
+      <div class="p-instruction">You should spend about 20 minutes on <strong>Questions 14–26</strong>, which are based on Reading Passage 2 below.</div>
+      <div class="p-title">Mind Music</div>
+      <div class="p-subtitle">Scientists investigate 'earworms', the music we can't get out of our heads</div>
+      <div class="p-text">
+        <p><span class="para-id">A</span>Ever had a song stuck in your head, playing on an endless loop? Scientists call them 'involuntary musical images', or 'earworms', and a wave of new research is shining light on why they occur and what can be learned from them. Some neuroscientists and cognitive psychologists are studying earworms to explore the mysteries of memory and the part of the brain that is beyond our conscious control. 'The idea that we have full control over our thought processes is an illusion,' says psychologist Lauren Stewart, who founded the master's program in music, mind and brain at Goldsmiths, University of London, UK, where recent research has taken place. Researchers haven't been able to watch what happens in the brain when earworms occur, because they happen unpredictably. Much of what is known about them comes from surveys, questionnaires, diaries and lab experiments.</p>
+        <p><span class="para-id">B</span>A Goldsmiths study published in the journal <em>Memory and Cognition</em> this year showed that the singing we hear in our heads tends to be true to actual recordings. Researchers had 17 volunteers tap to the beat of any earworm they heard during a four-day period while a device attached to their wrist recorded their movements. The tapping tempos were within 10% of the tempos of the original recordings. Another Goldsmiths study, published this year in <em>Consciousness and Cognition</em>, found that people who report hearing earworms often, and find them most intrusive, have slightly different brain structures, with more gray matter in areas associated with processing emotions.</p>
+        <p><span class="para-id">C</span>Studies also show that the music in our heads often starts playing during times of 'low cognitive load', such as while showering, getting dressed, walking, or doing chores. Dr Stewart likens earworms to 'sonic screen savers' that keep the mind entertained while it is otherwise unoccupied. She and her colleagues tested that theory by having volunteers listen to songs and giving them various tasks afterwards. The volunteers who sat idly for the next five minutes were the most likely to report hearing the music in their heads. Dr Stewart observed that the more challenging the activity, the less likely the volunteers were to hear the music. Diary studies also show songs tend to match people's moods and therefore they are not random.</p>
+        <p><span class="para-id">D</span>Songs the brain fixates on are usually those it has been exposed to recently, surveys show, which is why tunes getting heavy radio play frequently top the earworm charts. Even tunes you may have heard but didn't pay attention to can worm their way into your subconscious, says Ira Hyman, a psychologist at Western Washington University in Bellingham, USA. In an unpublished study there, participants who listened to music while doing other tasks were more likely to report that the songs returned as earworms later on, compared with participants who simply listened.</p>
+        <p><span class="para-id">E</span>Some earworms are just fragments of a song that repeat like a broken record. So, when the mind hits a part of a song it can't remember, it loops back rather than moving on. That could make an earworm even more entrenched, Dr Hyman says. According to a theory known as the Zeigarnik effect, named for a Soviet psychologist, Bluma Zeigarnik, unfinished thoughts and activities weigh on the mind more heavily than those that are completed, although experiments exposing students to interrupted songs have yielded mixed results.</p>
+        <p><span class="para-id">F</span>Researchers say they can't pinpoint a spot in the brain where earworms live. Imaging studies by Andrea Halpern at Bucknell University, in Lewisburg, USA, have shown that deliberately imagining music and actually listening to music activate many of the same neurological networks. Dr Halpern's earlier studies showed that when subjects listened to the first few notes of familiar music, areas in the right frontal and superior temporal portions of the brain became activated, along with the supplementary motor area at the top, which is typically involved in remembering sequences. When the same subjects listened to unfamiliar music and were asked to recall it, there was activity in the left frontal portions of the brain instead.</p>
+        <p><span class="para-id">G</span>One factor that makes some songs stick might be repetition. 'Repetition leads to familiarity which leads to anticipation, which is satisfied by hearing the song,' says John Seabrook, author of <em>The Song Machine: Inside the Hit Factory</em>, about how producers pump pop songs full of aural 'hooks', the punchy melodic phrases designed to target the brain and leave it wanting more. Songs with earworm potential appear to share certain features: a repeating pattern of ups and downs in pitch, and irregular musical intervals.</p>
+        <p><span class="para-id">H</span>The researchers plan next to test their results in reverse, and play ringtones from songs of both the earworm and non-earworm variety for volunteers several times a day to see which ones get stuck. Drs Stewart and Halpern are now working together to recruit survey participants for a study looking at whether people at different stages of life experience earworms differently. 'You can argue that older people might get them more often because they know more songs,' Dr Halpern says. 'But the few responses we have so far indicate that they have earworms less often. It could be that they don't play music as often as younger people do.'</p>
+      </div>
+    </div>
+    <div class="right-panel">
+      <!-- Q14–17 Paragraph Matching -->
+      <div class="q-block">
+        <div class="q-head">
+          <h3>Questions 14–17</h3>
+          <div class="q-inst">Reading Passage 2 has eight paragraphs, A–H. Which paragraph contains the following information?</div>
+        </div>
+        <div class="q-note">Write the correct letter, <strong>A–H</strong>, in the box next to each question.</div>
+        <div class="match-item"><div class="match-qn">14</div><div class="match-txt">a description of the characteristics common to songs with earworms</div><select class="match-sel" id="q14" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select></div>
+        <div class="match-item"><div class="match-qn">15</div><div class="match-txt">a justification for research into earworms</div><select class="match-sel" id="q15" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select></div>
+        <div class="match-item"><div class="match-qn">16</div><div class="match-txt">a description of the brain's reaction to known and unknown songs</div><select class="match-sel" id="q16" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select></div>
+        <div class="match-item"><div class="match-qn">17</div><div class="match-txt">details of proposed research into the frequency with which earworms occur in different age groups</div><select class="match-sel" id="q17" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select></div>
+      </div>
+      <hr class="divider">
+      <!-- Q18–21 Summary Completion -->
+      <div class="q-block">
+        <div class="q-head">
+          <h3>Questions 18–21</h3>
+          <div class="q-inst">Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.</div>
+        </div>
+        <div class="q-note">Write <strong>one word only</strong> from the passage in each gap.</div>
+        <div class="summary-box">
+          <div class="sum-title">Goldsmiths study</div>
+          <p>Researchers from Goldsmiths concluded that the music we imagine in our minds is quite similar to recordings. They proved this by asking volunteers to record the rhythm of music using a monitor on their <span class="q-n">18</span><input type="text" class="ans-input" id="q18" placeholder="........" oninput="updateBadge()" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off">. Further research has demonstrated that those who hear earworms more frequently have brains that may deal with <span class="q-n">19</span><input type="text" class="ans-input" id="q19" placeholder="........" oninput="updateBadge()" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"> differently from other people. Dr Stewart also believes that the brain is <span class="q-n">20</span><input type="text" class="ans-input" id="q20" placeholder="........" oninput="updateBadge()" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"> by earworms when it is not focused on a task. In fact, a reduction in the occurrence of earworms was found to be directly related to how <span class="q-n">21</span><input type="text" class="ans-input" id="q21" placeholder="........" oninput="updateBadge()" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"> the task was. Interestingly, volunteers' diaries revealed that the songs they heard inside their head reflected their moods, so the choice of music is not accidental.</p>
+        </div>
+      </div>
+      <hr class="divider">
+      <!-- Q22–26 Researcher Matching -->
+      <div class="q-block">
+        <div class="q-head">
+          <h3>Questions 22–26</h3>
+          <div class="q-inst">Look at the following statements and the list of researchers below. Match each statement with the correct researcher, A, B, C or D.</div>
+        </div>
+        <div class="q-note">Write the correct letter, <strong>A, B, C or D</strong>, in the box. You may use any letter more than once.</div>
+        <div class="word-bank">
+          <div class="wb-title">List of Researchers</div>
+          <div class="wb-grid">
+            <span class="wb-item"><strong>A</strong>&nbsp; Lauren Stewart</span>
+            <span class="wb-item"><strong>B</strong>&nbsp; Ira Hyman</span>
+            <span class="wb-item"><strong>C</strong>&nbsp; Andrea Halpern</span>
+            <span class="wb-item"><strong>D</strong>&nbsp; John Seabrook</span>
+          </div>
+        </div>
+        <div class="match-item"><div class="match-qn">22</div><div class="match-txt">Some musicians create music that is intentionally memorable.</div><select class="match-sel" id="q22" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+        <div class="match-item"><div class="match-qn">23</div><div class="match-txt">People are unable to completely regulate how they think.</div><select class="match-sel" id="q23" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+        <div class="match-item"><div class="match-qn">24</div><div class="match-txt">We can remember songs without knowing that we have heard them.</div><select class="match-sel" id="q24" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+        <div class="match-item"><div class="match-qn">25</div><div class="match-txt">Thinking about music has a similar effect on the brain to hearing music.</div><select class="match-sel" id="q25" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+        <div class="match-item"><div class="match-qn">26</div><div class="match-txt">Earworms are more persistent when only a short section of the song is constantly replayed.</div><select class="match-sel" id="q26" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
+        <div class="passage-nav">
+          <button class="nav-btn" onclick="switchTab(1)">← Passage 1 · Hokusai</button>
+          <button class="nav-btn next" onclick="switchTab(3)">Passage 3 · Australian Landscapes &nbsp;→</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- end pw2 -->
+
+  <!-- ══ PASSAGE 3 ══ -->
+  <div class="passage-wrap" id="pw3" style="display:none">
+    <div class="left-panel">
+      <div class="hl-hint">
+        <div class="hl-hint-icon">🖊</div>
+        <div class="hl-hint-text"><strong>Highlight:</strong> Select text → choose colour from toolbar. Click highlight to remove.
+          <div class="hl-swatches"><div class="hl-swatch" style="background:#fff176"></div><div class="hl-swatch" style="background:#b9f6ca"></div><div class="hl-swatch" style="background:#fce4ec"></div><div class="hl-swatch" style="background:#bbdefb"></div></div>
+        </div>
+      </div>
+      <div class="p-label">Reading Passage 3</div>
+      <div class="p-instruction">You should spend about 20 minutes on <strong>Questions 27–40</strong>, which are based on Reading Passage 3 below.</div>
+      <div class="p-title">200 Years of Australian Landscapes at the Royal Academy in London</div>
+      <div class="p-subtitle">This exhibition promises to chart the evolution of a nation through its art, but not everyone agrees with the reasons behind the choice of artwork.</div>
+      <div class="p-text">
+        <p><span class="para-id">A</span>For the casual viewer, the exhibition of landscapes, <em>Australia</em>, selected by the Royal Academy of Art, will be a spectacular guide through Australian art history. Included in the exhibition are a range of artists and styles, dating from the earliest days of colonial art and progressing through expressionism and modernism to the greats of the 20th century, culminating with the current generation of Australian artists. It is hardly surprising, then, that this results in a flexible, wide-ranging notion of landscape.</p>
+        <p><span class="para-id">B</span>But this landmark exhibition gives rise to some questions, and perhaps problems, regarding Britain's relationship with its former colony. By choosing a style of painting at which British artists excel, the Academy could be seen as inviting criticism that hints at a telling attitude towards Australian art by comparison. But it is the very theme of landscape that provides the strongest connection to Australian art from Britain. To consider it condescending is perhaps too strong, but for Joanna Mendelssohn, an Australian critic and Associate Professor at the University of NSW's College of Fine Arts (COFA), there is a suggestion that British artistic values have directed this exhibition, rather than allowing Australia the freedom to demonstrate its maturity.</p>
+        <p><span class="para-id">C</span>What Mendelssohn found surprising about this exhibition was that the underlying rules for the selection of works seemed to have been so conservative. Since the landscape is a very strong British artistic theme, it appeared to her that when the British looked to the art of a former colony, there was a tendency for them to think that those colonies would continue to be like the British themselves. In reviewing <em>Australia</em>, the British insisted on looking at the genre of landscape painting.</p>
+        <p><span class="para-id">D</span>Because of colonial ties, it was inevitable during Australian art's formative years that it would reflect Britain's devotion to the beloved landscape before its own character and idiosyncrasies took shape. And while Mendelssohn's concern over the exhibition's conventional selection is valid, the Academy is nevertheless embracing the peculiarities of Australian art from the mid-19th century onward, albeit within the boundaries of landscape.</p>
+        <p><span class="para-id">E</span><em>Australia</em> is curated by Kathleen Soriano, director of exhibitions at the Royal Academy. "Certainly the influence of English, French, or German art is much more evident in the early periods, in the early 1800s to mid-1800s," she says. "What I wanted to show was how Australian art develops a real distinctiveness, associated with the landscape and the light."</p>
+        <p><span class="para-id">F</span>The fusion of tradition of the European kind with something more specifically Australian, and often personal, is crucial to the exhibition, and extends particularly to some of the more contemporary artists involved. Sydney-born video artist Shaun Gladwell is a good example of this. Gladwell's most famous piece, which is featured in the exhibition, is <em>Storm Sequence</em> (2000), a video of Gladwell skateboarding on the Bondi seafront as one of Sydney's signature brutal storms lingers offshore. It is his acknowledgment of landscape (or seascape) tradition, colored by Gladwell's own individualism. "I was thinking about this tradition of Romantic landscape, but I wanted to make it personal," says Gladwell.</p>
+        <p><span class="para-id">G</span>So while it may seem narrow for Britain to reduce Australian art to the genre of landscape, there can be little denying that British landscape painting is still relevant to a current generation of Australian practitioners, however indirectly.</p>
+        <p><span class="para-id">H</span>Visitors to the exhibition encounter Australian Aboriginal art first, the idea being that these works warrant a prominent position because they were 'first'. Over the last couple of decades, London has hosted many successful exhibitions of Aboriginal art in smaller spaces, but for Soriano, <em>Australia</em> represents an opportunity to place such art in a broader context. 'One of the reasons landscape makes sense as being the right theme was because Aboriginal art started in and on the landscape,' she says. 'It was important for me to present Indigenous art to audiences, and I felt it was most authentic that it was seen as part of Australian art history, rather than a separate area with a world of its own.'</p>
+        <p><span class="para-id">I</span>Meanwhile, Australian critic Mendelssohn also points out that London is increasingly less important to today's generation of artists, and this somewhat weakens the ceremony surrounding the exhibition in London. 'China is the most important art market in the world,' she says. 'If you've made it in Shanghai, you've made it. The world has changed. My students in Australia, who come from all over the world, really want to see Venice Biennale and Art Basel, but they're less interested in going to London. When I was growing up, London was the destination, and then when I was at university all the smart young things wanted to go to New York. Now they want to go everywhere. There's no such thing as the centre and the periphery like there used to be. It's much more complicated.'</p>
+      </div>
+    </div>
+    <div class="right-panel">
+      <!-- Q27–31 YES/NO/NOT GIVEN -->
+      <div class="q-block">
+        <div class="q-head">
+          <h3>Questions 27–31</h3>
+          <div class="q-inst">Do the following statements agree with the views of the writer in Reading Passage 3?</div>
+        </div>
+        <div class="q-note">
+          <strong>YES</strong> – if the statement agrees with the views of the writer<br>
+          <strong>NO</strong> – if the statement contradicts the views of the writer<br>
+          <strong>NOT GIVEN</strong> – if it is impossible to say what the writer thinks about this
+        </div>
+        <div class="yng-item" id="row27"><div class="yng-qn">27</div><div class="yng-txt">As expected, the artworks chosen for the exhibition reflect a narrow interpretation of landscape.</div><div class="yng-opts"><button class="yng-btn" data-val="YES" onclick="setYNG(27,'YES',this)">YES</button><button class="yng-btn" data-val="NO" onclick="setYNG(27,'NO',this)">NO</button><button class="yng-btn" data-val="NOT GIVEN" onclick="setYNG(27,'NOT GIVEN',this)">NG</button></div></div>
+        <div class="yng-item" id="row28"><div class="yng-qn">28</div><div class="yng-txt">The Academy rejected Australian suggestions for the subject of the exhibition.</div><div class="yng-opts"><button class="yng-btn" data-val="YES" onclick="setYNG(28,'YES',this)">YES</button><button class="yng-btn" data-val="NO" onclick="setYNG(28,'NO',this)">NO</button><button class="yng-btn" data-val="NOT GIVEN" onclick="setYNG(28,'NOT GIVEN',this)">NG</button></div></div>
+        <div class="yng-item" id="row29"><div class="yng-qn">29</div><div class="yng-txt">The colonial relationship meant that early Australian landscape painting followed the traditions of English landscape painting.</div><div class="yng-opts"><button class="yng-btn" data-val="YES" onclick="setYNG(29,'YES',this)">YES</button><button class="yng-btn" data-val="NO" onclick="setYNG(29,'NO',this)">NO</button><button class="yng-btn" data-val="NOT GIVEN" onclick="setYNG(29,'NOT GIVEN',this)">NG</button></div></div>
+        <div class="yng-item" id="row30"><div class="yng-qn">30</div><div class="yng-txt">The exhibition reflects the fact that Australian art developed its own particular qualities.</div><div class="yng-opts"><button class="yng-btn" data-val="YES" onclick="setYNG(30,'YES',this)">YES</button><button class="yng-btn" data-val="NO" onclick="setYNG(30,'NO',this)">NO</button><button class="yng-btn" data-val="NOT GIVEN" onclick="setYNG(30,'NOT GIVEN',this)">NG</button></div></div>
+        <div class="yng-item" id="row31"><div class="yng-qn">31</div><div class="yng-txt">Contemporary Australian artists have generally rejected British landscape traditions.</div><div class="yng-opts"><button class="yng-btn" data-val="YES" onclick="setYNG(31,'YES',this)">YES</button><button class="yng-btn" data-val="NO" onclick="setYNG(31,'NO',this)">NO</button><button class="yng-btn" data-val="NOT GIVEN" onclick="setYNG(31,'NOT GIVEN',this)">NG</button></div></div>
+      </div>
+      <hr class="divider">
+      <!-- Q32–36 Multiple Choice -->
+      <div class="q-block">
+        <div class="q-head">
+          <h3>Questions 32–36</h3>
+          <div class="q-inst">Choose the correct letter, A, B, C or D.</div>
+        </div>
+        <div class="mc-q">
+          <div class="mc-q-text"><span class="mc-q-num">32</span> What is the writer's main point in the second paragraph?</div>
+          <label class="mc-opt" id="q32A"><input type="radio" name="q32" value="A" onchange="setMC(32,'A')"> <span><span class="mc-letter">A</span> Australian landscape painting derives from the British tradition.</span></label>
+          <label class="mc-opt" id="q32B"><input type="radio" name="q32" value="B" onchange="setMC(32,'B')"> <span><span class="mc-letter">B</span> Australian landscape painting is more highly regarded than British.</span></label>
+          <label class="mc-opt" id="q32C"><input type="radio" name="q32" value="C" onchange="setMC(32,'C')"> <span><span class="mc-letter">C</span> Britain is still imposing its principles on Australian art.</span></label>
+          <label class="mc-opt" id="q32D"><input type="radio" name="q32" value="D" onchange="setMC(32,'D')"> <span><span class="mc-letter">D</span> British art cannot be compared to Australian art.</span></label>
+        </div>
+        <div class="mc-q" style="margin-top:10px">
+          <div class="mc-q-text"><span class="mc-q-num">33</span> What does Joanna Mendelssohn find surprising?</div>
+          <label class="mc-opt" id="q33A"><input type="radio" name="q33" value="A" onchange="setMC(33,'A')"> <span><span class="mc-letter">A</span> Modern Australian landscape painting has great variety.</span></label>
+          <label class="mc-opt" id="q33B"><input type="radio" name="q33" value="B" onchange="setMC(33,'B')"> <span><span class="mc-letter">B</span> The guidelines for the choice of work were very traditional.</span></label>
+          <label class="mc-opt" id="q33C"><input type="radio" name="q33" value="C" onchange="setMC(33,'C')"> <span><span class="mc-letter">C</span> Landscape painting remains a popular subject for British artists.</span></label>
+          <label class="mc-opt" id="q33D"><input type="radio" name="q33" value="D" onchange="setMC(33,'D')"> <span><span class="mc-letter">D</span> The British find the Australian landscape unsuitable as a subject.</span></label>
+        </div>
+        <div class="mc-q" style="margin-top:10px">
+          <div class="mc-q-text"><span class="mc-q-num">34</span> Shaun Gladwell's work is included in the exhibition because</div>
+          <label class="mc-opt" id="q34A"><input type="radio" name="q34" value="A" onchange="setMC(34,'A')"> <span><span class="mc-letter">A</span> it adopts a subjective approach to depicting the landscape.</span></label>
+          <label class="mc-opt" id="q34B"><input type="radio" name="q34" value="B" onchange="setMC(34,'B')"> <span><span class="mc-letter">B</span> skateboarding is an inspiration to many Australian artists.</span></label>
+          <label class="mc-opt" id="q34C"><input type="radio" name="q34" value="C" onchange="setMC(34,'C')"> <span><span class="mc-letter">C</span> storms are a significant feature in the Australian landscape.</span></label>
+          <label class="mc-opt" id="q34D"><input type="radio" name="q34" value="D" onchange="setMC(34,'D')"> <span><span class="mc-letter">D</span> Bondi is an iconic Australian location.</span></label>
+        </div>
+        <div class="mc-q" style="margin-top:10px">
+          <div class="mc-q-text"><span class="mc-q-num">35</span> What was the reason for Soriano including Aboriginal art in the exhibition?</div>
+          <label class="mc-opt" id="q35A"><input type="radio" name="q35" value="A" onchange="setMC(35,'A')"> <span><span class="mc-letter">A</span> It is not well known in London art circles.</span></label>
+          <label class="mc-opt" id="q35B"><input type="radio" name="q35" value="B" onchange="setMC(35,'B')"> <span><span class="mc-letter">B</span> Aboriginal landscape painting influenced Australian settlers.</span></label>
+          <label class="mc-opt" id="q35C"><input type="radio" name="q35" value="C" onchange="setMC(35,'C')"> <span><span class="mc-letter">C</span> It is part of the Australian art tradition and not independent of it.</span></label>
+          <label class="mc-opt" id="q35D"><input type="radio" name="q35" value="D" onchange="setMC(35,'D')"> <span><span class="mc-letter">D</span> Modern Aboriginal painting deals with changes to the landscape.</span></label>
+        </div>
+        <div class="mc-q" style="margin-top:10px">
+          <div class="mc-q-text"><span class="mc-q-num">36</span> By referring to China, Mendelssohn is making the point that</div>
+          <label class="mc-opt" id="q36A"><input type="radio" name="q36" value="A" onchange="setMC(36,'A')"> <span><span class="mc-letter">A</span> having an exhibition in London is not as important as it used to be.</span></label>
+          <label class="mc-opt" id="q36B"><input type="radio" name="q36" value="B" onchange="setMC(36,'B')"> <span><span class="mc-letter">B</span> young artists in Britain are not interested in Australian art.</span></label>
+          <label class="mc-opt" id="q36C"><input type="radio" name="q36" value="C" onchange="setMC(36,'C')"> <span><span class="mc-letter">C</span> art from Shanghai is more important than Australian art.</span></label>
+          <label class="mc-opt" id="q36D"><input type="radio" name="q36" value="D" onchange="setMC(36,'D')"> <span><span class="mc-letter">D</span> New York is still a preferred destination for young artists.</span></label>
+        </div>
+      </div>
+      <hr class="divider">
+      <!-- Q37–40 Sentence Endings -->
+      <div class="q-block">
+        <div class="q-head">
+          <h3>Questions 37–40</h3>
+          <div class="q-inst">Complete each sentence with the correct ending, A–F, below.</div>
+        </div>
+        <div class="q-note">Write the correct letter, <strong>A–F</strong>, in the box next to each question.</div>
+        <div class="endings-box">
+          <div class="endings-title">List of Endings</div>
+          <div class="end-item"><span class="end-letter">A</span> reflects the mood created by the natural environment.</div>
+          <div class="end-item"><span class="end-letter">B</span> demonstrates that the dominant art form in Australia is landscape painting.</div>
+          <div class="end-item"><span class="end-letter">C</span> demonstrates an understanding of the historical importance of the land.</div>
+          <div class="end-item"><span class="end-letter">D</span> showcases a very small number of artists.</div>
+          <div class="end-item"><span class="end-letter">E</span> demonstrates a strong European flavour.</div>
+          <div class="end-item"><span class="end-letter">F</span> shows an acceptance of the unique qualities of Australian art.</div>
+        </div>
+        <div class="match-item"><div class="match-qn">37</div><div class="match-txt">In spite of its conservatism, the Royal Academy exhibition</div><select class="match-sel" id="q37" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></div>
+        <div class="match-item"><div class="match-qn">38</div><div class="match-txt">Australian art of the early to mid-1800s</div><select class="match-sel" id="q38" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></div>
+        <div class="match-item"><div class="match-qn">39</div><div class="match-txt">The modern work by Gladwell chosen for the exhibition</div><select class="match-sel" id="q39" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></div>
+        <div class="match-item"><div class="match-qn">40</div><div class="match-txt">Including Aboriginal art in the exhibition</div><select class="match-sel" id="q40" onchange="updateBadge()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></div>
+        <div class="passage-nav">
+          <button class="nav-btn" onclick="switchTab(2)">← Passage 2 · Mind Music</button>
+          <span class="nav-spacer"></span>
+        </div>
+      </div>
+    </div>
+  </div><!-- end pw3 -->
+</div><!-- end examScreen -->
+
+<!-- RESULTS SCREEN -->
+<div id="resultsScreen" style="display:none;min-height:100vh;background:linear-gradient(145deg,#001840,#0055a4);padding:40px 20px;overflow-y:auto">
+  <div style="background:#fff;border-radius:16px;box-shadow:0 24px 64px rgba(0,0,0,.4);max-width:520px;width:100%;text-align:center;padding:48px 40px;margin:auto">
+    <div style="font-size:64px;margin-bottom:16px">✅</div>
+    <h2 style="font-size:24px;font-weight:900;color:#001840;margin-bottom:10px">Test Completed!</h2>
+    <p id="resSubtitle" style="font-size:15px;color:#555;margin-bottom:24px"></p>
+    <div style="background:#f0f5ff;border-radius:10px;padding:18px 24px;margin-bottom:24px;font-size:15px;color:#333;line-height:1.8">
+      Your results have been recorded and<br><strong>automatically sent to your teacher</strong>.<br>
+      You will receive feedback as soon as possible.
+    </div>
+    <div id="emailStatus" style="font-size:14px;color:#888;margin-top:4px">✉ Sending results to teacher…</div>
+  </div>
+  <div style="display:none"><span id="resTotalScore"></span><span id="resBand"></span><span id="p1score"></span><span id="p2score"></span><span id="p3score"></span></div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────
+let studentName='',studentDOB='',startTime=null,examStartTime='';
+let timerInterval=null,timeLeft=3600;
+let answers={};
+let submitted=false;
+const DRAFT_KEY='ielts_reading_mock06';
+let draftSaveTimer=null;
+
+// ── DRAFT ──────────────────────────────────────────
+function saveDraft(){
+  if(submitted||!studentName) return;
+  try{
+    const saved={};
+    document.querySelectorAll('input.ans-input').forEach(el=>{if(el.id) saved[el.id]=el.value;});
+    document.querySelectorAll('select.match-sel').forEach(el=>{if(el.id) saved[el.id]=el.value;});
+    localStorage.setItem(DRAFT_KEY,JSON.stringify({name:studentName,dob:studentDOB,timeLeft,inputs:saved,btnAnswers:{...answers},savedAt:new Date().toISOString()}));
+  }catch(e){}
+}
+function saveDraftDebounced(){clearTimeout(draftSaveTimer);draftSaveTimer=setTimeout(saveDraft,2000);}
+function clearDraft(){try{localStorage.removeItem(DRAFT_KEY);}catch(e){}}
+
+function checkReadingDraft(){
+  try{
+    const raw=localStorage.getItem(DRAFT_KEY);
+    if(!raw) return;
+    const draft=JSON.parse(raw);
+    if(!draft||!draft.name) return;
+    const timeStr=new Date(draft.savedAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('draftName').textContent=draft.name;
+    document.getElementById('draftTime').textContent=timeStr;
+    document.getElementById('modalDraft').style.display='flex';
+  }catch(e){}
+}
+
+function restoreReadingDraft(){
+  try{
+    const draft=JSON.parse(localStorage.getItem(DRAFT_KEY));
+    if(!draft){document.getElementById('modalDraft').style.display='none';return;}
+    document.getElementById('fullName').value=draft.name||'';
+    document.getElementById('dob').value=draft.dob||'';
+    document.getElementById('modalDraft').style.display='none';
+    startExam();
+    if(draft.timeLeft>0) timeLeft=draft.timeLeft;
+    if(draft.inputs){
+      Object.entries(draft.inputs).forEach(([id,val])=>{
+        const el=document.getElementById(id);
+        if(el) el.value=val;
+      });
+    }
+    if(draft.btnAnswers){
+      Object.assign(answers,draft.btnAnswers);
+      // Re-apply TFNG buttons Q1-7
+      for(let i=1;i<=7;i++){
+        const val=answers['q'+i]; if(!val) continue;
+        const row=document.getElementById('row'+i);
+        if(row) row.querySelectorAll('.tfng-btn').forEach(b=>b.classList.toggle('sel',b.dataset.val===val));
+      }
+      // Re-apply YNG buttons Q27-31
+      for(let i=27;i<=31;i++){
+        const val=answers['q'+i]; if(!val) continue;
+        const row=document.getElementById('row'+i);
+        if(row) row.querySelectorAll('.yng-btn').forEach(b=>b.classList.toggle('sel',b.dataset.val===val));
+      }
+      // Re-apply MC radio Q32-36
+      for(let i=32;i<=36;i++){
+        const val=answers['q'+i]; if(!val) continue;
+        const r=document.querySelector(`input[name="q${i}"][value="${val}"]`);
+        if(r) r.checked=true;
+        ['A','B','C','D'].forEach(l=>{const el=document.getElementById('q'+i+l);if(el) el.classList.toggle('sel',l===val);});
+      }
+    }
+    updateBadge();
+  }catch(e){document.getElementById('modalDraft').style.display='none';}
+}
+function discardReadingDraft(){clearDraft();document.getElementById('modalDraft').style.display='none';}
+
+document.addEventListener('input',e=>{if(e.target.classList.contains('ans-input')) saveDraftDebounced();});
+document.addEventListener('change',e=>{if(e.target.classList.contains('match-sel')) saveDraftDebounced();});
+window.addEventListener('beforeunload',e=>{if(studentName&&!submitted){saveDraft();e.preventDefault();return e.returnValue='';}});
+window.addEventListener('load',()=>{checkReadingDraft();setInterval(saveDraft,30000);});
+
+// ── ANSWER KEY ──────────────────────────────────────
+const ANSWER_KEY={
+  q1:'FALSE',q2:'FALSE',q3:'TRUE',q4:'FALSE',q5:'FALSE',q6:'TRUE',q7:'TRUE',
+  q8:'concubine',q9:['kabuki','theatre'],q10:'surimono',q11:'manga',q12:'perspective',q13:'utamaro',
+  q14:'G',q15:'A',q16:'F',q17:'H',
+  q18:'wrist',q19:'emotions',q20:'entertained',q21:'challenging',
+  q22:'D',q23:'A',q24:'B',q25:'C',q26:'B',
+  q27:'NO',q28:'NOT GIVEN',q29:'YES',q30:'YES',q31:'NO',
+  q32:'C',q33:'B',q34:'A',q35:'C',q36:'A',
+  q37:'F',q38:'E',q39:'A',q40:'C'
+};
+
+const BAND_TABLE=[[39,9.0],[37,8.5],[35,8.0],[33,7.5],[30,7.0],[27,6.5],[23,6.0],[20,5.5],[16,5.0],[13,4.5],[10,4.0],[7,3.5],[5,3.0],[3,2.5]];
+function getBand(score){for(const[min,band]of BAND_TABLE){if(score>=min)return band.toFixed(1);}return'2.0';}
+
+// ── LOGIN ──────────────────────────────────────────
+function startExam(){
+  const name=document.getElementById('fullName').value.trim();
+  const dob=document.getElementById('dob').value;
+  let ok=true;
+  document.getElementById('nameErr').style.display='none';
+  document.getElementById('dobErr').style.display='none';
+  if(!name){document.getElementById('nameErr').style.display='block';ok=false;}
+  if(!dob){document.getElementById('dobErr').style.display='block';ok=false;}
+  if(!ok) return;
+  studentName=name; studentDOB=dob;
+  startTime=new Date();
+  examStartTime=new Date().toLocaleDateString('en-GB');
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('examScreen').style.display='flex';
+  document.getElementById('studentBar').textContent='👤 '+studentName;
+  document.querySelector('.btn-submit').style.display='none';
+  startTimer();
+  showToast('Good luck, '+studentName.split(' ')[0]+'! You have 60 minutes.');
+}
+
+// ── TIMER ──────────────────────────────────────────
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    const m=Math.floor(timeLeft/60),s=timeLeft%60;
+    const disp=document.getElementById('timerDisplay');
+    disp.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    disp.className='';
+    if(timeLeft<=300) disp.classList.add('warn');
+    if(timeLeft<=60) disp.classList.add('danger');
+    if(timeLeft<=0){clearInterval(timerInterval);disp.textContent='00:00';document.getElementById('timeupModal').style.display='flex';}
+  },1000);
+}
+
+// ── TABS ──────────────────────────────────────────
+function switchTab(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById('pw'+i).style.display=i===n?'flex':'none';
+    document.getElementById('tab'+i+'btn').classList.toggle('active',i===n);
+  });
+  document.querySelector('.btn-submit').style.display=n===3?'block':'none';
+}
+
+// ── TFNG ──────────────────────────────────────────
+function setTFNG(qnum,val,btn){
+  const row=document.getElementById('row'+qnum);
+  row.querySelectorAll('.tfng-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  answers['q'+qnum]=val;
+  saveDraftDebounced();
+  updateBadge();
+}
+
+// ── YNG ───────────────────────────────────────────
+function setYNG(qnum,val,btn){
+  const row=document.getElementById('row'+qnum);
+  row.querySelectorAll('.yng-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  answers['q'+qnum]=val;
+  saveDraftDebounced();
+  updateBadge();
+}
+
+// ── MC ────────────────────────────────────────────
+function setMC(qnum,val){
+  answers['q'+qnum]=val;
+  ['A','B','C','D'].forEach(l=>{
+    const el=document.getElementById('q'+qnum+l);
+    if(el) el.classList.toggle('sel',l===val);
+  });
+  saveDraftDebounced();
+  updateBadge();
+}
+
+// ── BADGE ─────────────────────────────────────────
+function countAnswered(){
+  let p1=0,p2=0,p3=0;
+  for(let i=1;i<=7;i++) if(answers['q'+i]) p1++;
+  for(let i=8;i<=13;i++){const el=document.getElementById('q'+i);if(el&&el.value.trim()) p1++;}
+  for(let i=14;i<=17;i++){const el=document.getElementById('q'+i);if(el&&el.value) p2++;}
+  for(let i=18;i<=21;i++){const el=document.getElementById('q'+i);if(el&&el.value.trim()) p2++;}
+  for(let i=22;i<=26;i++){const el=document.getElementById('q'+i);if(el&&el.value) p2++;}
+  for(let i=27;i<=31;i++) if(answers['q'+i]) p3++;
+  for(let i=32;i<=36;i++){const r=document.querySelector(`input[name="q${i}"]:checked`);if(r) p3++;}
+  for(let i=37;i<=40;i++){const el=document.getElementById('q'+i);if(el&&el.value) p3++;}
+  return{p1,p2,p3};
+}
+function updateBadge(){
+  const{p1,p2,p3}=countAnswered();
+  if(p1===13) document.getElementById('tab1btn').classList.add('complete');
+  if(p2===13) document.getElementById('tab2btn').classList.add('complete');
+  if(p3===14) document.getElementById('tab3btn').classList.add('complete');
+}
+
+// ── SUBMIT ────────────────────────────────────────
+function confirmSubmit(){
+  const m=Math.floor(timeLeft/60),s=timeLeft%60;
+  document.getElementById('timeLeft').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  document.getElementById('confirmModal').style.display='flex';
+}
+function closeConfirm(){document.getElementById('confirmModal').style.display='none';}
+
+function submitTest(){
+  clearInterval(timerInterval);
+  document.getElementById('confirmModal').style.display='none';
+  document.getElementById('timeupModal').style.display='none';
+  document.getElementById('examScreen').style.display='none';
+  collectAllAnswers();
+  showResults();
+}
+
+// ── COLLECT ANSWERS ────────────────────────────────
+function collectAllAnswers(){
+  for(let i=8;i<=13;i++){const el=document.getElementById('q'+i);if(el) answers['q'+i]=(el.value||'').trim().toLowerCase();}
+  for(let i=14;i<=17;i++){const el=document.getElementById('q'+i);if(el) answers['q'+i]=el.value;}
+  for(let i=18;i<=21;i++){const el=document.getElementById('q'+i);if(el) answers['q'+i]=(el.value||'').trim().toLowerCase();}
+  for(let i=22;i<=26;i++){const el=document.getElementById('q'+i);if(el) answers['q'+i]=el.value;}
+  for(let i=32;i<=36;i++){const r=document.querySelector(`input[name="q${i}"]:checked`);if(r) answers['q'+i]=r.value;}
+  for(let i=37;i<=40;i++){const el=document.getElementById('q'+i);if(el) answers['q'+i]=el.value;}
+}
+
+// ── SCORING ───────────────────────────────────────
+function scoreAnswers(){
+  let total=0,p1=0,p2=0,p3=0;
+  const results={};
+  function check(qnum,passage){
+    const k='q'+qnum;
+    const correct=ANSWER_KEY[k];
+    const student=answers[k]||'';
+    let ok=false;
+    if(Array.isArray(correct)) ok=correct.some(c=>c.toLowerCase()===student.toLowerCase());
+    else ok=(correct||'').toLowerCase()===(student||'').toLowerCase();
+    results[qnum]={student,correct:Array.isArray(correct)?correct.join('/'):correct,ok};
+    if(ok){total++;if(passage===1)p1++;else if(passage===2)p2++;else p3++;}
+  }
+  for(let i=1;i<=13;i++) check(i,1);
+  for(let i=14;i<=26;i++) check(i,2);
+  for(let i=27;i<=40;i++) check(i,3);
+  return{total,p1,p2,p3,results};
+}
+
+// ── SHOW RESULTS ──────────────────────────────────
+function showResults(){
+  submitted=true;
+  clearDraft();
+  const{total,p1,p2,p3,results}=scoreAnswers();
+  const band=getBand(total);
+  window._results={total,p1,p2,p3,band,results};
+  const rs=document.getElementById('resultsScreen');
+  rs.style.display='block';
+  document.getElementById('resSubtitle').textContent=studentName+' · '+new Date().toLocaleDateString('en-GB');
+  setTimeout(()=>sendToTeacher(),800);
+}
+
+// ── PDF ───────────────────────────────────────────
+function pdfSafe(s){
+  if(!s) return '';
+  return s.replace(/[àáảãạăằắẳẵặâầấẩẫậ]/g,'a').replace(/[ÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬ]/g,'A')
+    .replace(/đ/g,'d').replace(/Đ/g,'D')
+    .replace(/[èéẻẽẹêềếểễệ]/g,'e').replace(/[ÈÉẺẼẸÊỀẾỂỄỆ]/g,'E')
+    .replace(/[ìíỉĩị]/g,'i').replace(/[ÌÍỈĨỊ]/g,'I')
+    .replace(/[òóỏõọôồốổỗộơờớởỡợ]/g,'o').replace(/[ÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢ]/g,'O')
+    .replace(/[ùúủũụưừứửữự]/g,'u').replace(/[ÙÚỦŨỤƯỪỨỬỮỰ]/g,'U')
+    .replace(/[ỳýỷỹỵ]/g,'y').replace(/[ỲÝỶỸỴ]/g,'Y');
+}
+
+function buildPDFDoc(){
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const W=210,H=297,M=18,CW=W-M*2,safeName=pdfSafe(studentName);
+  doc.setFillColor(0,45,114);doc.rect(0,0,W,36,'F');
+  doc.setFillColor(200,164,0);doc.rect(0,36,W,1.5,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(20);
+  doc.text('IELTS Reading Mock Test 6',W/2,13,{align:'center'});
+  doc.setFontSize(10);doc.setFont('helvetica','normal');
+  doc.text('Student Result Report  ·  Huong Stella Paradigm',W/2,22,{align:'center'});
+  doc.setFontSize(9);doc.text('Date: '+examStartTime,W/2,30,{align:'center'});
+
+  let y=45;
+  doc.setFillColor(240,244,252);doc.setDrawColor(0,45,114);doc.setLineWidth(0.6);
+  doc.roundedRect(M,y,CW,30,2,2,'FD');
+  doc.setTextColor(0,45,114);doc.setFont('helvetica','bold');doc.setFontSize(9);
+  doc.text('CANDIDATE INFORMATION',M+5,y+7);
+  doc.setTextColor(40,40,40);doc.setFontSize(10);
+  const half=CW/2;
+  [['Full Name',safeName],['Date of Birth',studentDOB?new Date(studentDOB).toLocaleDateString('en-GB'):''],
+   ['Test Date',examStartTime],['Test Name','IELTS Reading Mock Test 6']
+  ].forEach((r,i)=>{
+    const col=i<2?0:1,row=i%2,rx=M+5+col*half,ry=y+15+row*9;
+    doc.setFont('helvetica','bold');doc.text(r[0]+': ',rx,ry);
+    const lw=doc.getTextWidth(r[0]+': ');
+    doc.setFont('helvetica','normal');doc.text(r[1],rx+lw,ry);
+  });
+  y+=38;
+
+  const{total,p1,p2,p3,band}=window._results;
+  const pct=Math.round(total/40*100);
+  doc.setFillColor(0,45,114);doc.roundedRect(M,y,CW,28,4,4,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(28);
+  doc.text('Score: '+total+' / 40',W/2,y+13,{align:'center'});
+  doc.setFontSize(13);doc.text('Band: '+band+'  ·  '+pct+'%',W/2,y+23,{align:'center'});
+  y+=34;
+
+  const parts=[{qs:Array.from({length:13},(_,i)=>i+1),lbl:'Passage 1 (Q1–13)'},
+               {qs:Array.from({length:13},(_,i)=>i+14),lbl:'Passage 2 (Q14–26)'},
+               {qs:Array.from({length:14},(_,i)=>i+27),lbl:'Passage 3 (Q27–40)'}];
+  const partScores=[p1,p2,p3];
+  const colW=(CW-8)/3;
+  doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(0,51,102);
+  doc.text('PASSAGE SCORES',M,y+6);y+=10;
+  parts.forEach((pt,i)=>{
+    const x=M+i*(colW+4);
+    doc.setFillColor(240,244,248);doc.roundedRect(x,y,colW,20,3,3,'F');
+    doc.setFillColor(0,51,102);doc.rect(x,y,colW,4,'F');
+    doc.setTextColor(255,255,255);doc.setFontSize(7);
+    doc.text(pt.lbl,x+colW/2,y+2.8,{align:'center'});
+    doc.setTextColor(0,51,102);doc.setFont('helvetica','bold');doc.setFontSize(16);
+    doc.text(partScores[i]+'/'+pt.qs.length,x+colW/2,y+14,{align:'center'});
+  });
+  y+=26;
+
+  const{results}=window._results;
+  parts.forEach((pt,pi)=>{
+    if(y>255){doc.addPage();y=15;}
+    doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(0,51,102);
+    doc.text(pt.lbl,M,y);y+=6;
+    const rowH=9,cols=5,cw2=(W-M*2)/cols;
+    const numQs=pt.qs.length;
+    const rows=Math.ceil(numQs/cols);
+    pt.qs.forEach((q,idx)=>{
+      const d=results[q]||{student:'—',correct:ANSWER_KEY['q'+q],ok:false};
+      const col=idx%cols,row=Math.floor(idx/cols);
+      const x=M+col*cw2,ady=y+row*rowH;
+      doc.setFillColor(d.ok?232:255,d.ok?245:235,d.ok?232:235);
+      doc.rect(x,ady-5,cw2-1,rowH-1,'F');
+      doc.setTextColor(d.ok?30:180,d.ok?110:30,d.ok?40:30);
+      doc.setFont('helvetica','bold');doc.setFontSize(8);
+      doc.text('Q'+q+': '+(d.student||'—').substring(0,10),x+2,ady);
+      if(!d.ok){doc.setFont('helvetica','normal');doc.setFontSize(7);doc.text('✓ '+(d.correct||'').substring(0,10),x+2,ady+3.5);}
+    });
+    y+=rows*rowH+6;
+  });
+
+  const totalPgs=doc.internal.getNumberOfPages();
+  for(let p=1;p<=totalPgs;p++){
+    doc.setPage(p);doc.setFillColor(0,45,114);doc.rect(0,H-11,W,11,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','normal');doc.setFontSize(8);
+    doc.text('IELTS Reading Mock Test 6  ·  Huong Stella Paradigm  ·  '+safeName,M,H-4);
+    doc.text('Page '+p+' of '+totalPgs,W-M,H-4,{align:'right'});
+  }
+  return doc;
+}
+
+// ── SEND TO TEACHER ────────────────────────────────
+const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxdPPd7LyO1Wr2I1GgkkHB09f0YIRD2gOCMCGmkOocpYlQov_6mPqdut9f-uxxvO448/exec';
+
+function setEmailStatus(msg,color){
+  const el=document.getElementById('emailStatus');
+  if(el){el.textContent=msg;el.style.color=color||'#888';}
+}
+
+function sendToTeacher(){
+  if(!window._results) return;
+  const{total,p1,p2,p3,band,results}=window._results;
+  const details={};
+  for(let i=1;i<=40;i++){if(results[i]) details[i]=results[i];}
+  const doc=buildPDFDoc();
+  const pdfBase64=doc.output('datauristring').split(',')[1];
+  setEmailStatus('✉ Sending results to teacher…','#888');
+  fetch(APPS_SCRIPT_URL,{
+    method:'POST',
+    body:JSON.stringify({
+      name:studentName,dob:studentDOB,date:examStartTime,
+      testName:'IELTS Reading Mock Test 6',
+      raw:total,band:typeof band==='number'?band.toFixed(1):String(band),
+      pct:Math.round(total/40*100),
+      scores:{1:p1,2:p2,3:p3,4:'—'},
+      details,pdf:pdfBase64
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status==='ok') setEmailStatus('✅ Results sent to teacher successfully.','#27ae60');
+    else setEmailStatus('❌ Send failed: '+res.message,'#c0392b');
+  })
+  .catch(err=>{setEmailStatus('❌ Could not connect: '+err,'#c0392b');});
+}
+
+// ── HIGHLIGHT ─────────────────────────────────────
+let _savedRange=null;
+function makeMarkListener(mark){
+  mark.addEventListener('click',function(e){
+    e.stopPropagation();
+    const parent=this.parentNode;
+    while(this.firstChild) parent.insertBefore(this.firstChild,this);
+    parent.removeChild(this);parent.normalize();
+  });
+}
+document.addEventListener('mouseup',(e)=>{
+  if(e.target.closest('#hlToolbar')) return;
+  if(!e.target.closest('.left-panel')){hideHL();return;}
+  const sel=window.getSelection();
+  if(!sel||sel.isCollapsed||!sel.toString().trim()){hideHL();return;}
+  const range=sel.getRangeAt(0);
+  _savedRange=range.cloneRange();
+  const rect=range.getBoundingClientRect();
+  const bar=document.getElementById('hlToolbar');
+  bar.style.display='flex';
+  const barW=bar.offsetWidth||230;
+  let left=rect.left+rect.width/2-barW/2;
+  left=Math.max(8,Math.min(left,window.innerWidth-barW-8));
+  let top=rect.top-52+window.scrollY;
+  if(top<8) top=rect.bottom+10+window.scrollY;
+  bar.style.left=left+'px';bar.style.top=top+'px';
+});
+document.addEventListener('mousedown',(e)=>{if(!e.target.closest('#hlToolbar')) hideHL();});
+function hideHL(){document.getElementById('hlToolbar').style.display='none';_savedRange=null;}
+function applyHL(color){
+  const range=_savedRange;if(!range) return;
+  try{
+    const mark=document.createElement('mark');mark.className='hl-'+color;
+    mark.title='Click to remove highlight';makeMarkListener(mark);range.surroundContents(mark);
+  }catch(e){
+    try{
+      const frag=range.extractContents();
+      const mark=document.createElement('mark');mark.className='hl-'+color;
+      mark.title='Click to remove highlight';makeMarkListener(mark);
+      mark.appendChild(frag);range.insertNode(mark);
+    }catch(e2){showToast('Please highlight within a single paragraph.',2500);}
+  }
+  window.getSelection().removeAllRanges();hideHL();
+}
+function eraseHL(){
+  if(_savedRange){
+    const ancestor=_savedRange.commonAncestorContainer;
+    const el=ancestor.nodeType===3?ancestor.parentElement:ancestor;
+    const panel=el.closest('.left-panel');
+    if(panel){
+      [...panel.querySelectorAll('mark[class^="hl-"]')].forEach(m=>{
+        const mRange=document.createRange();mRange.selectNode(m);
+        if(_savedRange.compareBoundaryPoints(Range.END_TO_START,mRange)<=0&&
+           _savedRange.compareBoundaryPoints(Range.START_TO_END,mRange)>=0){
+          const parent=m.parentNode;
+          while(m.firstChild) parent.insertBefore(m.firstChild,m);
+          parent.removeChild(m);parent.normalize();
+        }
+      });
+    }
+  }
+  window.getSelection().removeAllRanges();hideHL();
+}
+
+// ── ANTI-CHEAT ────────────────────────────────────
+document.addEventListener('copy',e=>{
+  if(!e.target.closest('.right-panel')&&!e.target.closest('#resultsScreen')){
+    e.preventDefault();showToast('Text copying is disabled during the exam.',2000);
+  }
+});
+document.addEventListener('cut',e=>{e.preventDefault();});
+document.addEventListener('contextmenu',e=>{if(e.target.closest('.left-panel')) e.preventDefault();});
+document.addEventListener('keydown',e=>{
+  const ctrl=e.ctrlKey||e.metaKey;
+  if(ctrl&&(e.key==='f'||e.key==='F')){e.preventDefault();showToast('🔒 Search is disabled during the exam.',2500);return;}
+  if(ctrl&&e.shiftKey&&e.key.toUpperCase()==='R'){
+    e.preventDefault();
+    if(!confirm('Register "IELTS Reading Mock Test 06" in Test Map?')) return;
+    fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(Object.assign({action:'registerTest'},TEST_META))})
+    .then(r=>r.json())
+    .then(res=>alert(res.status==='ok'?'✅ Registered: IELTS Reading Mock Test 06':'❌ '+(res.message||'Error')))
+    .catch(err=>alert('❌ '+err));
+  }
+});
+
+// ── TOAST ─────────────────────────────────────────
+function showToast(msg,ms=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.display='block';
+  setTimeout(()=>{t.style.display='none';},ms);
+}
+
+// ── TEST META ─────────────────────────────────────
+const TEST_META={testName:'IELTS Reading Mock Test 06',skill:'Reading',mockNum:'06',file:'IELTS_Reading_Mock_Test_06.html',source:'Various',draftKey:'ielts_reading_mock06',audio:'-'};
+</script>
+</body>
+</html>
