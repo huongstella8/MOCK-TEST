@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Writing Mock Test 2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--blue:#002d72;--red:#c62828;--gold:#f0a500;--bg:#f4f6f8;--white:#fff;--border:#dde2ea;--text:#1a1a1a}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* LOGIN */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:linear-gradient(145deg,#001a52 0%,#003fa3 60%,#005fc7 100%)}
+.login-box{background:#fff;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.35);padding:44px 40px 36px;max-width:460px;width:100%;}
+.login-title{font-size:21px;font-weight:800;color:#002d72;text-align:center;margin-bottom:4px;}
+.login-sub{font-size:13px;color:#888;text-align:center;margin-bottom:28px;}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#555;margin-bottom:6px}
+.form-group input{width:100%;padding:13px 15px;border:2px solid #dde2ea;border-radius:9px;font-size:15px;color:#222;outline:none;transition:border-color .2s;font-family:inherit}
+.form-group input:focus{border-color:#0057b7;box-shadow:0 0 0 3px rgba(0,87,183,.12)}
+.btn-start{width:100%;padding:15px;background:#002d72;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;margin-top:6px;transition:background .2s}
+.btn-start:hover{background:#0057b7}
+.login-note{font-size:12px;color:#bbb;text-align:center;margin-top:16px;line-height:1.6}
+.login-note strong{color:#999}
+
+/* EXAM */
+#examScreen{display:none;flex-direction:column;min-height:100vh;}
+.exam-header{background:var(--blue);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.h-title{font-size:16px;font-weight:700;letter-spacing:1px}
+.h-candidate{font-size:13px;opacity:.85}
+.timer-circle{width:44px;height:44px;border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--gold);background:rgba(240,165,0,.1)}
+.timer-circle.urgent{border-color:#ff6b6b;color:#ff6b6b;background:rgba(255,107,107,.1)}
+.status-bar{background:#1a3a5c;color:#fff;padding:8px 24px;display:flex;align-items:center;gap:20px;font-size:13px;flex-wrap:wrap}
+.submit-btn-hdr{background:var(--red);color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;margin-left:auto}
+.submit-btn-hdr:hover{background:#a00d25}
+
+/* TABS */
+.tabs-nav{background:#e8eef5;border-bottom:1px solid #c5d0dd;display:flex;padding:0 12px;}
+.tab-btn{padding:12px 20px;font-size:14px;font-weight:600;border:none;background:none;cursor:pointer;color:#556;border-bottom:3px solid transparent;transition:all .2s}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--red);background:var(--white)}
+.tab-btn:hover:not(.active){background:rgba(0,51,102,.05)}
+.tab-content{display:none}
+.tab-content.active{display:flex}
+
+/* SPLIT LAYOUT */
+.split-wrap{display:flex;gap:0;width:100%;min-height:calc(100vh - 130px);}
+.task-panel{flex:0 0 45%;max-width:45%;padding:24px 20px;overflow-y:auto;position:sticky;top:110px;max-height:calc(100vh - 115px);border-right:2px solid #dde2ea;background:#fff;}
+.task-panel::-webkit-scrollbar{width:5px}
+.task-panel::-webkit-scrollbar-thumb{background:#c5cdd6;border-radius:3px}
+.essay-panel{flex:1;padding:24px 24px;display:flex;flex-direction:column;}
+
+@media(max-width:800px){
+  .split-wrap{flex-direction:column;display:block;}
+  .task-panel{position:static;max-height:none;max-width:100%;flex:none;border-right:none;border-bottom:2px solid #dde2ea;}
+}
+
+/* TASK PANEL */
+.task-label{display:inline-block;background:var(--blue);color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;letter-spacing:1px;margin-bottom:10px}
+.task-heading{font-size:16px;font-weight:700;color:var(--blue);margin-bottom:10px;line-height:1.4}
+.task-instruction{font-size:14px;color:#333;line-height:1.7;margin-bottom:14px}
+.task-tip{font-size:13px;color:#666;background:#f9fafc;border-left:3px solid var(--gold);padding:8px 12px;border-radius:0 4px 4px 0;margin-bottom:14px;line-height:1.6}
+
+/* DATA TABLES */
+.data-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px}
+.data-table th{background:#002d72;color:#fff;padding:7px 10px;text-align:left;font-size:12px}
+.data-table td{padding:6px 10px;border-bottom:1px solid #dde2ea;color:#333}
+.data-table tr:nth-child(even) td{background:#f4f6f8}
+
+/* CHART */
+.chart-wrap{display:flex;justify-content:center;margin-bottom:14px;}
+.chart-wrap canvas{max-width:260px!important;max-height:260px!important}
+
+/* ESSAY AREA */
+.essay-label{font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px;letter-spacing:.5px}
+textarea.essay-input{flex:1;width:100%;min-height:360px;padding:16px;border:2px solid #c5d0dd;border-radius:8px;font-size:15px;line-height:1.75;resize:vertical;font-family:'Georgia',serif;color:#222;background:#fff;outline:none;transition:border-color .2s;spellcheck:false}
+textarea.essay-input:focus{border-color:var(--blue)}
+.wc-bar{display:flex;align-items:center;justify-content:space-between;margin-top:8px;font-size:13px;color:#666}
+.wc-count{font-weight:700;color:var(--blue);font-size:15px}
+.wc-status{font-size:12px;padding:3px 8px;border-radius:10px;background:#e8f0fe;color:#002d72}
+.wc-status.ok{background:#e8f8e8;color:#1b5e20}
+.wc-status.warn{background:#fff3cd;color:#856404}
+
+/* MODAL */
+#modalDraft{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;}
+.draft-modal{background:#fff;border-radius:14px;padding:36px 32px;max-width:420px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.25);}
+.draft-modal .dm-icon{font-size:50px;margin-bottom:12px;}
+.draft-modal h3{margin:0 0 10px;font-size:20px;color:#002d72;}
+.draft-modal p{color:#444;font-size:14.5px;line-height:1.6;margin:0 0 22px;}
+.draft-modal .dm-btns{display:flex;gap:12px;justify-content:center;}
+.draft-modal .dm-cancel{padding:10px 22px;border:2px solid #bbb;border-radius:8px;background:#fff;color:#555;font-size:14px;cursor:pointer;font-weight:600;}
+.draft-modal .dm-confirm{padding:10px 22px;border:none;border-radius:8px;background:#002d72;color:#fff;font-size:14px;cursor:pointer;font-weight:700;}
+</style>
+</head>
+<body>
+
+<!-- Draft Modal -->
+<div id="modalDraft">
+  <div class="draft-modal">
+    <div class="dm-icon">💾</div>
+    <h3>Unsaved answers found!</h3>
+    <p>Found an unfinished attempt by <strong id="draftName"></strong> saved at <strong id="draftTime"></strong>.<br>Would you like to continue from where you left off?</p>
+    <div class="dm-btns">
+      <button class="dm-cancel" onclick="discardDraft()">Start Fresh</button>
+      <button class="dm-confirm" onclick="restoreDraft()">Restore Draft</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-title">IELTS WRITING MOCK TEST</div>
+    <div class="login-sub">Huong Stella Paradigm</div>
+    <div class="form-group">
+      <label for="studentName">Full Name</label>
+      <input type="text" id="studentName" placeholder="Enter your full name" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+    </div>
+    <div class="form-group">
+      <label for="studentDOB">Date of Birth</label>
+      <input type="date" id="studentDOB">
+    </div>
+    <button class="btn-start" onclick="startExam()">Begin Test ›</button>
+    <p class="login-note">
+      <strong>Writing Module</strong> · Task 1 + Task 2 · 60 Minutes<br>
+      Results sent to teacher automatically
+    </p>
+  </div>
+</div>
+
+<!-- EXAM SCREEN -->
+<div id="examScreen">
+  <div class="exam-header">
+    <div>
+      <div class="h-title">IELTS WRITING · TEST 2</div>
+      <div class="h-candidate" id="hdrCandidate">Candidate: —</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="text-align:right">
+        <div style="font-size:12px;opacity:.7" id="hdrDate">Date: —</div>
+        <div style="font-size:12px;opacity:.7">Huong Stella Paradigm</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="timer-circle" id="timerCircle">60:00</div>
+        <div style="font-size:12px;line-height:1.4">Time<br>Remaining</div>
+      </div>
+    </div>
+  </div>
+  <div class="status-bar">
+    <span id="statusMsg" style="font-size:14px;font-weight:600">Writing in progress</span>
+    <button class="submit-btn-hdr" onclick="openSubmitModal()">⬛ SUBMIT TEST</button>
+  </div>
+
+  <div class="tabs-nav">
+    <button class="tab-btn active" id="tabT1" onclick="switchTab('t1')">Task 1 · Graphs / Charts</button>
+    <button class="tab-btn" id="tabT2" onclick="switchTab('t2')">Task 2 · Essay</button>
+  </div>
+
+  <!-- TASK 1 -->
+  <div class="tab-content active" id="t1">
+    <div class="split-wrap">
+      <div class="task-panel">
+        <div class="task-label">TASK 1</div>
+        <div class="task-heading">Library User Survey</div>
+        <div class="task-instruction">The pie chart shows the categories of users of a university library in 2023, and the table shows their satisfaction levels with different aspects of the library.</div>
+        <div class="task-tip">Spend about <strong>20 minutes</strong> on this task. Write <strong>at least 150 words</strong>. Summarise the information by selecting and reporting the main features and making comparisons where relevant.</div>
+
+        <!-- Pie chart -->
+        <div class="task-heading" style="font-size:14px;margin-bottom:8px">Library Users by Category (%)</div>
+        <div class="chart-wrap">
+          <canvas id="pieChart"></canvas>
+        </div>
+
+        <!-- Table -->
+        <div class="task-heading" style="font-size:14px;margin-bottom:8px">Satisfaction with Library Services (%)</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Aspect</th>
+              <th>Satisfied</th>
+              <th>Neutral</th>
+              <th>Dissatisfied</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Opening hours</td><td>65</td><td>35</td><td>0</td></tr>
+            <tr><td>Staff helpfulness</td><td>95</td><td>5</td><td>0</td></tr>
+            <tr><td>Books</td><td>50</td><td>40</td><td>10</td></tr>
+            <tr><td>Journals</td><td>45</td><td>35</td><td>20</td></tr>
+            <tr><td>Wi-fi</td><td>48</td><td>33</td><td>19</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="essay-panel">
+        <div class="essay-label">YOUR RESPONSE — TASK 1</div>
+        <textarea class="essay-input" id="essayT1" placeholder="Write your Task 1 response here…" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" oninput="updateWC('t1');saveDraftDebounced()"></textarea>
+        <div class="wc-bar">
+          <div>Word count: <span class="wc-count" id="wcT1">0</span></div>
+          <div class="wc-status" id="wcStatusT1">Minimum: 150 words</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="tab-content" id="t2">
+    <div class="split-wrap">
+      <div class="task-panel">
+        <div class="task-label">TASK 2</div>
+        <div class="task-heading">Primary Education and Play</div>
+        <div class="task-instruction">
+          Some people argue that primary schools focus too much on formal learning. To what extent do you agree? How important is it for children to play as well as learn?
+        </div>
+        <div class="task-tip">Spend about <strong>40 minutes</strong> on this task. Write <strong>at least 250 words</strong>. Give reasons for your answer and include any relevant examples from your own knowledge or experience.</div>
+      </div>
+      <div class="essay-panel">
+        <div class="essay-label">YOUR RESPONSE — TASK 2</div>
+        <textarea class="essay-input" id="essayT2" placeholder="Write your Task 2 essay here…" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off" oninput="updateWC('t2');saveDraftDebounced()"></textarea>
+        <div class="wc-bar">
+          <div>Word count: <span class="wc-count" id="wcT2">0</span></div>
+          <div class="wc-status" id="wcStatusT2">Minimum: 250 words</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUBMIT MODAL -->
+<div id="submitModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:14px;padding:36px 32px;max-width:420px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.25);">
+    <div style="font-size:50px;margin-bottom:12px">📝</div>
+    <h3 style="margin:0 0 10px;font-size:20px;color:#002d72;">Submit Writing Test?</h3>
+    <p style="color:#444;font-size:14.5px;line-height:1.6;margin:0 0 22px;">Are you sure you want to submit? You cannot edit your essays after submitting.</p>
+    <div id="preSubmitInfo" style="font-size:14px;color:#555;margin-bottom:18px;line-height:1.8"></div>
+    <div style="display:flex;gap:12px;justify-content:center;">
+      <button style="padding:10px 22px;border:2px solid #bbb;border-radius:8px;background:#fff;color:#555;font-size:14px;cursor:pointer;font-weight:600;" onclick="closeSubmitModal()">Continue Writing</button>
+      <button style="padding:10px 22px;border:none;border-radius:8px;background:#c62828;color:#fff;font-size:14px;cursor:pointer;font-weight:700;" onclick="submitTest()">Submit Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="resultScreen" style="display:none;min-height:100vh;background:var(--bg);padding:24px;">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.12);max-width:520px;width:100%;text-align:center;padding:48px 40px">
+      <div style="font-size:64px;margin-bottom:16px">✅</div>
+      <h2 style="font-size:24px;font-weight:700;color:var(--blue);margin-bottom:10px">Writing Test Submitted!</h2>
+      <p id="resultInfo" style="font-size:15px;color:#555;margin-bottom:24px"></p>
+      <div style="background:#f0f7ff;border-radius:10px;padding:18px 24px;margin-bottom:24px;font-size:15px;color:#333;line-height:1.8">
+        Your essays have been sent to your teacher.<br>
+        <strong>You will receive written feedback shortly.</strong><br>
+        Writing is assessed by the teacher — not auto-scored.
+      </div>
+      <div id="emailStatus" style="font-size:14px;color:#666">✉ Sending to teacher…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let studentName='',studentDOB='',examStartTime='',submitTime='';
+let timeLeft=3600,timerInt=null,submitted=false;
+let draftSaveTimer=null;
+const DRAFT_KEY='ielts_writing_mock02';
+
+// ── PIE CHART ──
+window.addEventListener('load',()=>{
+  const ctx=document.getElementById('pieChart').getContext('2d');
+  new Chart(ctx,{
+    type:'pie',
+    data:{
+      labels:['FT undergraduate','FT postgraduate','PT postgraduate','Distance learning','Academic staff'],
+      datasets:[{
+        data:[44,25,16,8,7],
+        backgroundColor:['#002d72','#0057b7','#4a90d9','#8ab4de','#c0d6f0'],
+        borderColor:'#fff',borderWidth:2
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{position:'bottom',labels:{font:{size:11},padding:10}},
+        tooltip:{callbacks:{label:ctx=>ctx.label+': '+ctx.raw+'%'}}
+      }
+    }
+  });
+  checkDraft();
+  setInterval(saveDraft,30000);
+});
+
+// ── WORD COUNT ──
+function countWords(txt){return txt.trim().length===0?0:txt.trim().split(/\s+/).length;}
+function updateWC(task){
+  const id='essay'+(task==='t1'?'T1':'T2');
+  const txt=document.getElementById(id).value;
+  const wc=countWords(txt);
+  const min=task==='t1'?150:250;
+  const countEl=document.getElementById('wc'+(task==='t1'?'T1':'T2'));
+  const statEl=document.getElementById('wcStatus'+(task==='t1'?'T1':'T2'));
+  countEl.textContent=wc;
+  if(wc>=min){statEl.textContent='✓ Word count OK';statEl.className='wc-status ok';}
+  else{statEl.textContent=min-wc+' more words needed';statEl.className='wc-status warn';}
+}
+
+// ── DRAFT ──
+function saveDraft(){
+  if(submitted||!studentName) return;
+  try{
+    localStorage.setItem(DRAFT_KEY,JSON.stringify({
+      name:studentName,dob:studentDOB,timeLeft,savedAt:new Date().toISOString(),
+      t1:document.getElementById('essayT1').value,
+      t2:document.getElementById('essayT2').value
+    }));
+  }catch(e){}
+}
+function saveDraftDebounced(){clearTimeout(draftSaveTimer);draftSaveTimer=setTimeout(saveDraft,2000);}
+function clearDraft(){try{localStorage.removeItem(DRAFT_KEY);}catch(e){}}
+function checkDraft(){
+  try{
+    const raw=localStorage.getItem(DRAFT_KEY);
+    if(!raw) return;
+    const d=JSON.parse(raw);
+    if(!d||!d.name) return;
+    const t=new Date(d.savedAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('draftName').textContent=d.name;
+    document.getElementById('draftTime').textContent=t;
+    document.getElementById('modalDraft').style.display='flex';
+  }catch(e){}
+}
+function restoreDraft(){
+  try{
+    const d=JSON.parse(localStorage.getItem(DRAFT_KEY));
+    if(!d){document.getElementById('modalDraft').style.display='none';return;}
+    document.getElementById('studentName').value=d.name||'';
+    document.getElementById('studentDOB').value=d.dob||'';
+    document.getElementById('modalDraft').style.display='none';
+    startExam();
+    if(d.timeLeft>0) timeLeft=d.timeLeft;
+    if(d.t1){document.getElementById('essayT1').value=d.t1;updateWC('t1');}
+    if(d.t2){document.getElementById('essayT2').value=d.t2;updateWC('t2');}
+  }catch(e){document.getElementById('modalDraft').style.display='none';}
+}
+function discardDraft(){clearDraft();document.getElementById('modalDraft').style.display='none';}
+
+window.addEventListener('beforeunload',e=>{
+  if(studentName&&!submitted){saveDraft();e.preventDefault();return e.returnValue='';}
+});
+
+// ── EXAM ──
+function startExam(){
+  const name=document.getElementById('studentName').value.trim();
+  const dob=document.getElementById('studentDOB').value;
+  if(!name){alert('Please enter your full name.');return;}
+  if(!dob){alert('Please enter your date of birth.');return;}
+  studentName=name;studentDOB=dob;
+  examStartTime=new Date().toLocaleString('en-GB');
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('examScreen').style.display='flex';
+  document.getElementById('hdrCandidate').textContent='Candidate: '+name;
+  document.getElementById('hdrDate').textContent='Date: '+new Date().toLocaleDateString('en-GB');
+  timerInt=setInterval(tickTimer,1000);
+}
+function tickTimer(){
+  timeLeft--;
+  const m=Math.floor(timeLeft/60),s=timeLeft%60;
+  const el=document.getElementById('timerCircle');
+  el.textContent=m+':'+(s<10?'0':'')+s;
+  if(timeLeft<=300) el.classList.add('urgent');
+  if(timeLeft<=0){clearInterval(timerInt);submitTest();}
+}
+
+// ── TABS ──
+function switchTab(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  const capId=id[0].toUpperCase()+id.slice(1);
+  document.getElementById('tab'+capId).classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+// ── SUBMIT ──
+function openSubmitModal(){
+  const wc1=countWords(document.getElementById('essayT1').value);
+  const wc2=countWords(document.getElementById('essayT2').value);
+  document.getElementById('preSubmitInfo').innerHTML=
+    'Task 1: <strong>'+wc1+'</strong> words (min 150)<br>Task 2: <strong>'+wc2+'</strong> words (min 250)';
+  document.getElementById('submitModal').style.display='flex';
+}
+function closeSubmitModal(){document.getElementById('submitModal').style.display='none';}
+function submitTest(){
+  if(submitted) return;
+  submitted=true;clearInterval(timerInt);clearDraft();
+  const now = new Date();
+  submitTime = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+  document.getElementById('submitModal').style.display='none';
+  document.getElementById('examScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  document.getElementById('resultInfo').textContent=studentName+' · '+examStartTime;
+  setTimeout(()=>sendToTeacher(),2000);
+}
+
+// ── PDF ──
+function pdfSafe(s){
+  if(!s) return '';
+  return s
+    .replace(/[àáảãạăằắẳẵặâầấẩẫậ]/g,'a').replace(/[ÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬ]/g,'A')
+    .replace(/đ/g,'d').replace(/Đ/g,'D')
+    .replace(/[èéẻẽẹêềếểễệ]/g,'e').replace(/[ÈÉẺẼẸÊỀẾỂỄỆ]/g,'E')
+    .replace(/[ìíỉĩị]/g,'i').replace(/[ÌÍỈĨỊ]/g,'I')
+    .replace(/[òóỏõọôồốổỗộơờớởỡợ]/g,'o').replace(/[ÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢ]/g,'O')
+    .replace(/[ùúủũụưừứửữự]/g,'u').replace(/[ÙÚỦŨỤƯỪỨỬỮỰ]/g,'U')
+    .replace(/[ỳýỷỹỵ]/g,'y').replace(/[ỲÝỶỸỴ]/g,'Y');
+}
+function formatDOB(d){return d?new Date(d).toLocaleDateString('en-GB'):'';}
+
+function buildPDF(){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const W=210,H=297,M=18,CW=W-M*2;
+  const safeName=pdfSafe(studentName);
+  const t1Text=document.getElementById('essayT1').value;
+  const t2Text=document.getElementById('essayT2').value;
+  const wc1=countWords(t1Text),wc2=countWords(t2Text);
+
+  // Header
+  doc.setFillColor(0,45,114);doc.rect(0,0,W,36,'F');
+  doc.setFillColor(200,164,0);doc.rect(0,36,W,1.5,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(20);
+  doc.text('IELTS Writing Mock Test',W/2,13,{align:'center'});
+  doc.setFontSize(10);doc.setFont('helvetica','normal');
+  doc.text('Student Submission  ·  Huong Stella Paradigm',W/2,22,{align:'center'});
+  doc.setFontSize(9);doc.text('Date: '+examStartTime+'    |    Submitted: '+submitTime,W/2,30,{align:'center'});
+
+  let y=45;
+  // Candidate box
+  doc.setFillColor(240,244,252);doc.setDrawColor(0,45,114);doc.setLineWidth(0.6);
+  doc.roundedRect(M,y,CW,28,2,2,'FD');
+  doc.setTextColor(0,45,114);doc.setFont('helvetica','bold');doc.setFontSize(9);
+  doc.text('CANDIDATE INFORMATION',M+5,y+7);
+  doc.setTextColor(40,40,40);doc.setFontSize(10);
+  const half=CW/2;
+  [['Full Name',safeName],['Date of Birth',formatDOB(studentDOB)],
+   ['Test Date',examStartTime.split(',')[0]||examStartTime],['Submitted At',submitTime]
+  ].forEach((r,i)=>{
+    const col=i<2?0:1,row=i%2,rx=M+5+col*half,ry=y+15+row*8;
+    doc.setFont('helvetica','bold');doc.text(r[0]+': ',rx,ry);
+    const lw=doc.getTextWidth(r[0]+': ');
+    doc.setFont('helvetica','normal');doc.text(r[1],rx+lw,ry);
+  });
+  y+=35;
+
+  // Word count summary
+  doc.setFillColor(0,45,114);doc.roundedRect(M,y,CW,22,4,4,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(13);
+  doc.text('Task 1: '+wc1+' words    |    Task 2: '+wc2+' words',W/2,y+9,{align:'center'});
+  doc.setFontSize(10);doc.setFont('helvetica','normal');
+  doc.text('Note: Writing is assessed by teacher, not auto-scored',W/2,y+17,{align:'center'});
+  y+=29;
+
+  // Task 1 essay
+  doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(0,45,114);
+  doc.text('TASK 1 RESPONSE  ('+wc1+' words)',M,y);y+=7;
+  doc.setDrawColor(200,164,0);doc.setLineWidth(1);doc.line(M,y,W-M,y);y+=5;
+  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(40,40,40);
+  const t1Lines=doc.splitTextToSize(pdfSafe(t1Text)||'[No response]',CW);
+  for(const ln of t1Lines){
+    if(y>275){doc.addPage();y=18;}
+    doc.text(ln,M,y);y+=5.5;
+  }
+  y+=6;
+
+  // Task 2 essay
+  if(y>240){doc.addPage();y=18;}
+  doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(0,45,114);
+  doc.text('TASK 2 RESPONSE  ('+wc2+' words)',M,y);y+=7;
+  doc.setDrawColor(200,164,0);doc.setLineWidth(1);doc.line(M,y,W-M,y);y+=5;
+  doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(40,40,40);
+  const t2Lines=doc.splitTextToSize(pdfSafe(t2Text)||'[No response]',CW);
+  for(const ln of t2Lines){
+    if(y>275){doc.addPage();y=18;}
+    doc.text(ln,M,y);y+=5.5;
+  }
+
+  // Footers
+  const totalPgs=doc.internal.getNumberOfPages();
+  for(let p=1;p<=totalPgs;p++){
+    doc.setPage(p);doc.setFillColor(0,45,114);doc.rect(0,H-11,W,11,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','normal');doc.setFontSize(8);
+    doc.text('IELTS Writing Mock Test 2  ·  Huong Stella Paradigm  ·  '+safeName,M,H-4);
+    doc.text('Page '+p+' of '+totalPgs,W-M,H-4,{align:'right'});
+  }
+  return doc;
+}
+
+const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxdPPd7LyO1Wr2I1GgkkHB09f0YIRD2gOCMCGmkOocpYlQov_6mPqdut9f-uxxvO448/exec';
+
+function sendToTeacher(){
+  const doc=buildPDF();
+  const pdfBase64=doc.output('datauristring').split(',')[1];
+  const t1=document.getElementById('essayT1').value;
+  const t2=document.getElementById('essayT2').value;
+  document.getElementById('emailStatus').textContent='✉ Sending to teacher…';
+  fetch(APPS_SCRIPT_URL,{
+    method:'POST',
+    body:JSON.stringify({
+      name:studentName,dob:formatDOB(studentDOB),date:examStartTime,
+      testName:'IELTS Writing Mock Test 2',
+      task1:t1,task2:t2,wc1:countWords(t1),wc2:countWords(t2),
+      pdf:pdfBase64
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status==='ok'){document.getElementById('emailStatus').textContent='✅ Results sent to teacher successfully.';document.getElementById('emailStatus').style.color='#27ae60';}
+    else{document.getElementById('emailStatus').textContent='❌ Send failed: '+res.message;document.getElementById('emailStatus').style.color='#c0392b';}
+  })
+  .catch(err=>{document.getElementById('emailStatus').textContent='❌ Connection error: '+err;document.getElementById('emailStatus').style.color='#c0392b';});
+}
+
+// ── TEST REGISTRATION (Ctrl+Shift+R) ──────────────────────────
+const TEST_META = {testName:"IELTS Writing Mock Test 02",skill:"Writing",mockNum:"02",file:"IELTS_Writing_Mock_Test_02.html",source:"Cam21 T4",draftKey:"ielts_writing_mock02",audio:"-"};
+document.addEventListener('keydown', function(e){
+  if(e.ctrlKey && e.shiftKey && e.key.toUpperCase()==='R'){
+    e.preventDefault();
+    if(!confirm('Register "'+TEST_META.testName+'" in Test Map?')) return;
+    fetch(APPS_SCRIPT_URL,{
+      method:'POST',
+      body:JSON.stringify(Object.assign({action:'registerTest'},TEST_META))
+    })
+    .then(function(r){return r.json();})
+    .then(function(res){
+      alert(res.status==='ok'
+        ? '✅ Registered: '+TEST_META.testName
+        : '❌ '+(res.message||'Error'));
+    })
+    .catch(function(err){alert('❌ '+err);});
+  }
+});
+
+</script>
+</body>
+</html>
