@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Reading Mock Test 3</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#002d72;--red:#c62828;--gold:#f0a500;
+  --bg:#f4f6f8;--white:#fff;--border:#dde2ea;--text:#1a1a1a;
+  --correct:#2e7d32;--wrong:#c62828;--neutral:#666;
+}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── LOGIN ── */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;
+  background:linear-gradient(145deg,#001a52 0%,#003fa3 60%,#005fc7 100%)}
+.login-box{background:#fff;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.35);
+  padding:44px 40px 36px;max-width:460px;width:100%;}
+.login-title{font-size:21px;font-weight:800;color:#002d72;text-align:center;margin-bottom:4px;}
+.login-sub{font-size:13px;color:#888;text-align:center;margin-bottom:28px;}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#555;margin-bottom:6px}
+.form-group input{width:100%;padding:13px 15px;border:2px solid #dde2ea;border-radius:9px;font-size:15px;color:#222;outline:none;transition:border-color .2s,box-shadow .2s;font-family:inherit}
+.form-group input:focus{border-color:#0057b7;box-shadow:0 0 0 3px rgba(0,87,183,.12)}
+.btn-start{width:100%;padding:15px;background:#002d72;color:#fff;border:none;border-radius:9px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;transition:background .2s,transform .1s;margin-top:6px}
+.btn-start:hover{background:#0057b7}
+.btn-start:active{transform:scale(.98)}
+.login-note{font-size:12px;color:#bbb;text-align:center;margin-top:16px;line-height:1.6}
+.login-note strong{color:#999}
+
+/* ── EXAM LAYOUT ── */
+#examScreen{display:none;flex-direction:column;min-height:100vh;}
+.exam-header{background:var(--blue);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.h-title{font-size:16px;font-weight:700;letter-spacing:1px}
+.h-candidate{font-size:13px;opacity:.85}
+.status-bar{background:#1a3a5c;color:#fff;padding:8px 24px;display:flex;align-items:center;gap:20px;font-size:13px;flex-wrap:wrap}
+.timer-wrap{display:flex;align-items:center;gap:8px}
+.timer-circle{width:44px;height:44px;border-radius:50%;border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--gold);background:rgba(240,165,0,.1)}
+.timer-circle.urgent{border-color:#ff6b6b;color:#ff6b6b;background:rgba(255,107,107,.1)}
+.submit-btn-hdr{background:var(--red);color:#fff;border:none;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;margin-left:auto}
+.submit-btn-hdr:hover{background:#a00d25}
+
+/* ── TABS ── */
+.tabs-nav{background:#e8eef5;border-bottom:1px solid #c5d0dd;display:flex;padding:0 12px;overflow-x:auto}
+.tab-btn{padding:12px 20px;font-size:14px;font-weight:600;border:none;background:none;cursor:pointer;color:#556;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--red);background:var(--white)}
+.tab-btn:hover:not(.active){background:rgba(0,51,102,.05)}
+.tab-content{display:none;max-width:960px;margin:0 auto;width:100%}
+.tab-content.active{display:block}
+
+/* ── PASSAGE + QUESTIONS ── */
+.split-wrap{display:flex;gap:0;min-height:calc(100vh - 130px);}
+.passage-panel{flex:0 0 48%;max-width:48%;padding:24px 20px;overflow-y:auto;position:sticky;top:110px;max-height:calc(100vh - 115px);border-right:2px solid #dde2ea;background:#fff;}
+.passage-panel::-webkit-scrollbar{width:5px}
+.passage-panel::-webkit-scrollbar-thumb{background:#c5cdd6;border-radius:3px}
+.questions-panel{flex:1;padding:24px 24px;overflow-y:auto;}
+@media(max-width:800px){
+  .split-wrap{flex-direction:column;}
+  .passage-panel{position:static;max-height:50vh;max-width:100%;flex:none;border-right:none;border-bottom:2px solid #dde2ea;}
+}
+
+/* ── PASSAGE CONTENT ── */
+.passage-title{font-size:18px;font-weight:800;color:var(--blue);margin-bottom:4px;line-height:1.3}
+.passage-subtitle{font-size:13px;font-style:italic;color:#555;margin-bottom:16px;line-height:1.5}
+.passage-body{font-size:14px;line-height:1.75;color:#222;}
+.passage-body p{margin-bottom:12px;}
+.passage-body .para-label{font-weight:700;color:var(--blue);margin-right:6px;}
+.passage-body .footnote{font-size:12px;color:#888;margin-top:8px;border-top:1px solid #eee;padding-top:6px}
+
+/* ── QUESTIONS ── */
+.q-section{background:#fff;border:1px solid #dde3eb;border-radius:10px;padding:20px 24px;margin-bottom:20px}
+.q-section-title{font-size:15px;font-weight:700;color:var(--blue);margin-bottom:6px}
+.q-section-instruction{font-size:14px;font-style:italic;color:#444;margin-bottom:16px;padding:8px 12px;background:#f9fafc;border-left:3px solid var(--gold);border-radius:0 4px 4px 0;line-height:1.6}
+.q-row{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid #eef0f4}
+.q-row:last-child{border-bottom:none}
+.q-num-cell{font-weight:700;color:var(--blue);min-width:32px;font-size:15px;margin-top:4px}
+.q-label{font-size:15px;flex:1;color:#333;line-height:1.5}
+.q-input{padding:6px 10px;border:2px solid #c5d0dd;border-radius:6px;font-size:15px;width:170px;transition:border-color .2s;background:#fff;font-family:inherit}
+.q-input:focus{outline:none;border-color:var(--blue)}
+.q-input.correct{border-color:var(--correct);background:#f0fdf0}
+.q-input.wrong{border-color:var(--wrong);background:#fff5f5}
+.q-input[readonly]{background:#f4f6f8}
+.q-select{padding:6px 10px;border:2px solid #c5d0dd;border-radius:6px;font-size:15px;background:#fff;cursor:pointer;font-family:inherit;min-width:120px}
+.q-select:focus{outline:none;border-color:var(--blue)}
+.q-select.correct{border-color:var(--correct);background:#f0fdf0}
+.q-select.wrong{border-color:var(--wrong);background:#fff5f5}
+.correct-ans{font-size:12px;color:var(--correct);font-weight:700;margin-left:8px;display:none;white-space:nowrap}
+.correct-ans.show{display:inline}
+.note-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #eef0f4;flex-wrap:wrap}
+.note-row:last-child{border-bottom:none}
+.note-text{font-size:15px;color:#333;flex:1;line-height:1.6}
+.q-num-inline{font-weight:700;color:var(--blue);margin-right:2px}
+.ref-box{background:#f4f6f8;border-radius:6px;padding:12px 16px;margin-bottom:16px;font-size:14px;line-height:2;color:#333}
+/* MCQ */
+.mc-group{margin-bottom:12px}
+.mc-group label{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:15px;color:#333;border:1px solid #e0e6ef;margin-bottom:6px;transition:background .15s;line-height:1.5}
+.mc-group label:hover{background:#f0f5ff}
+.mc-group label.selected{background:#e8f0fe;border-color:var(--blue)}
+.mc-group label.correct-label{background:#e8f8e8;border-color:var(--correct)}
+.mc-group label.wrong-label{background:#fde8e8;border-color:var(--wrong)}
+.mc-group input[type=radio]{accent-color:var(--blue);flex-shrink:0;margin-top:3px}
+.mc-letter{font-weight:700;color:var(--blue);min-width:20px}
+.q-stem{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.5}
+
+/* ── RESULT SCREEN ── */
+#resultScreen{display:none;min-height:100vh;background:var(--bg);padding:24px;}
+
+/* ── MODAL ── */
+#modalDraft{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;}
+.draft-modal{background:#fff;border-radius:14px;padding:36px 32px;max-width:420px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.25);}
+.draft-modal .dm-icon{font-size:50px;margin-bottom:12px;}
+.draft-modal h3{margin:0 0 10px;font-size:20px;color:#002d72;}
+.draft-modal p{color:#444;font-size:14.5px;line-height:1.6;margin:0 0 22px;}
+.draft-modal .dm-btns{display:flex;gap:12px;justify-content:center;}
+.draft-modal .dm-cancel{padding:10px 22px;border:2px solid #bbb;border-radius:8px;background:#fff;color:#555;font-size:14px;cursor:pointer;font-weight:600;}
+.draft-modal .dm-confirm{padding:10px 22px;border:none;border-radius:8px;background:#002d72;color:#fff;font-size:14px;cursor:pointer;font-weight:700;}
+.draft-modal .dm-cancel:hover{border-color:#888;}
+.draft-modal .dm-confirm:hover{background:#0041a8;}
+</style>
+</head>
+<body>
+
+<!-- Draft Modal -->
+<div id="modalDraft">
+  <div class="draft-modal">
+    <div class="dm-icon">💾</div>
+    <h3>Unsaved answers found!</h3>
+    <p>Found an unfinished attempt by <strong id="draftName"></strong> saved at <strong id="draftTime"></strong>.<br>Would you like to continue from where you left off?</p>
+    <div class="dm-btns">
+      <button class="dm-cancel" onclick="discardReadingDraft()">Start Fresh</button>
+      <button class="dm-confirm" onclick="restoreReadingDraft()">Restore Answers</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── LOGIN ── -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-title">IELTS READING MOCK TEST</div>
+    <div class="login-sub">Huong Stella Paradigm</div>
+    <div class="form-group">
+      <label for="studentName">Full Name</label>
+      <input type="text" id="studentName" placeholder="Enter your full name" autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off">
+    </div>
+    <div class="form-group">
+      <label for="studentDOB">Date of Birth</label>
+      <input type="date" id="studentDOB">
+    </div>
+    <button class="btn-start" onclick="startExam()">Begin Test ›</button>
+    <p class="login-note">
+      Results sent to teacher automatically
+    </p>
+  </div>
+</div>
+
+<!-- ── EXAM SCREEN ── -->
+<div id="examScreen">
+  <div class="exam-header">
+    <div>
+      <div class="h-title">IELTS READING · TEST 3</div>
+      <div class="h-candidate" id="hdrCandidate">Candidate: —</div>
+    </div>
+    <div style="text-align:right;display:flex;align-items:center;gap:16px">
+      <div>
+        <div style="font-size:12px;opacity:.7" id="hdrDate">Date: —</div>
+        <div style="font-size:12px;opacity:.7">Huong Stella Paradigm</div>
+      </div>
+      <div class="timer-wrap">
+        <div class="timer-circle" id="timerCircle">60:00</div>
+        <div style="font-size:12px;line-height:1.4">Time<br>Remaining</div>
+      </div>
+    </div>
+  </div>
+  <div class="status-bar">
+    <span id="statusMsg" style="font-size:14px;font-weight:600">Reading in progress</span>
+    <button class="submit-btn-hdr" onclick="openSubmitModal()">⬛ SUBMIT TEST</button>
+  </div>
+
+  <div class="tabs-nav">
+    <button class="tab-btn active" id="tabP1" onclick="switchTab('p1')">Passage 1 · Q1–13</button>
+    <button class="tab-btn" id="tabP2" onclick="switchTab('p2')">Passage 2 · Q14–26</button>
+    <button class="tab-btn" id="tabP3" onclick="switchTab('p3')">Passage 3 · Q27–40</button>
+  </div>
+
+  <!-- ========= PASSAGE 1 ========= -->
+  <div class="tab-content active" id="p1">
+    <div class="split-wrap">
+      <div class="passage-panel">
+        <div class="passage-title">The Davies Sisters</div>
+        <div class="passage-subtitle">Between 1908 and 1924, Gwendoline and Margaret Davies amassed one of the largest collections of late-nineteenth and early-twentieth-century French paintings in Britain</div>
+        <div class="passage-body">
+          <p>Gwendoline (1882–1951) and Margaret (1884–1963) Davies were the granddaughters of David Davies, a Welshman who amassed a fortune in the shipping and <strong>mining</strong> industries. In 1907, when Gwendoline came into her inheritance (Margaret would follow in 1909), the sisters were said to be the wealthiest unmarried women in Britain. Their religious upbringing in rural Wales gave them a deep sense of social responsibility and they chose to use their inheritance for cultural and philanthropic purposes.</p>
+          <p>While there was no real family history of art collecting, the sisters' <strong>education</strong> was rigorously geared toward such pursuits. Their London school focused on cultural rather than academic study, and they travelled extensively with their governess, Jane Blaker, visiting art galleries and making extensive <strong>notes</strong> on the collections there.</p>
+          <p>The sisters began to make regular art purchases from 1908, which roughly coincided with the dates of their inheritance. They took advice from various people, including the art dealer Hugh Blaker (the brother of Jane Blaker) and David Croal Thompson, who was also an art dealer. While it was long assumed that these men were largely responsible for the nature of the sisters' collection, it has recently been accepted that Gwendoline and Margaret retained a far more active role in the process.</p>
+          <p>The sisters' <strong>journals</strong> reveal their preference for Old Master paintings. Yet they initially made very few attempts to secure any such works. While the sisters were wealthy in relative terms, their income was nothing compared to the fortunes of American art collectors of this period, such as J. Pierpont Morgan. Quite simply, high quality Old Master works were, if not beyond their means, then beyond what they were willing to pay for them. Instead, their early purchases were of the fashionable, safe variety, and included, for example, paintings by the French artist Jean-Baptiste-Camille Corot.</p>
+          <p>However, it was only a few years before their collecting took a new direction and they turned to the work of the French Impressionists. We know that Hugh Blaker, as a champion of contemporary French art had a hand in the decision, and we know also that they would have seen examples on their various trips to Paris. Whatever the precise reason for this change, their first purchases of Impressionist art, made in October 1912, were scenes of <strong>Venice</strong> by the French artist Claude Monet. Over the next 12 years, the sisters amassed the bulk of their Impressionist collection, including six further works by Monet, two more by Manet, and three by Renoir, including his well-known painting La Parisienne.</p>
+          <p>The First World War (1914–1918) played a part in the development of the sisters' collection. Their initial response to the war effort was to finance the safe passage of artists from occupied Belgium to Wales, as a humanitarian act, but also with the hope of establishing a vibrant artists' community in the area. Later in the conflict, both sisters decided to volunteer at a <strong>canteen</strong> for troops at Troyes, in northern France; Gwendoline in 1916, followed by Margaret in 1917.</p>
+          <p>It was tedious and distressing work, which would have a permanent effect on Gwendoline's health. Yet on one of numerous trips to nearby Paris, she visited the Bernheim-Jeune Gallery. Here she acquired two works by Cézanne — Provençal Landscape and The François Zola Dam. The paintings were shipped directly to Bath, England, where they became the first works by Cézanne to go on display in a public gallery in Britain.</p>
+          <p>Commentators have often described the sisters as unlikely pioneer collectors. Much is made of their isolation in rural Wales and the fact that they didn't make <strong>friends</strong> with artists or gallery owners. Yet they didn't feel obliged to follow fashionable tastes and were free to pursue their own preferences. Although they relied on a trusted circle of advisers, they made frequent trips to London and Paris, and also regularly had paintings sent to their home for consideration.</p>
+          <p>By the early 1920s, Gwendoline felt increasingly uncomfortable buying art works when faced with the poverty and social upheaval created by the First World War. Her philanthropic pursuits then became focused almost exclusively on social causes and the development of the sisters' home at Gregynog Hall into a conference center and venue for the Gregynog Festival of Music and Poetry. Gwendoline made her final art purchase in March 1926. Margaret also stopped collecting around this time, but started again in the 1930s acquiring, on a relatively small scale, work by contemporary British artists.</p>
+          <p>The sisters collected French Impressionist paintings at a time when such art was routinely ignored by individuals and institutions alike. The Gwendoline and Margaret Davies collection, donated in 1951 and 1963 respectively to the National Museum Wales, contains major examples of work by leading French Impressionists. In collecting paintings that they loved, the sisters created a lasting and meaningful cultural legacy for the people of Wales and beyond.</p>
+        </div>
+      </div>
+
+      <div class="questions-panel">
+        <div class="q-section">
+          <div class="q-section-title">Questions 1–7</div>
+          <div class="q-section-instruction">Complete the notes below.<br>Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</div>
+
+          <div class="q-section" style="background:#f9fafc;border:none;padding:16px;">
+            <div style="font-size:15px;font-weight:700;color:#333;text-align:center;margin-bottom:12px">Gwendoline and Margaret Davies</div>
+            <div style="font-size:14px;font-weight:700;color:var(--blue);margin-bottom:8px">Family and early life</div>
+            <div class="note-row"><span class="note-text">their grandfather's wealth came from <span class="q-num-inline">1</span><input class="q-input" id="q1" style="width:130px" type="text" placeholder="answer…" maxlength="20" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"><span class="correct-ans" id="ca1"></span> and transportation businesses</span></div>
+            <div class="note-row"><span class="note-text">their upbringing gave them a sense of social responsibility</span></div>
+            <div class="note-row"><span class="note-text">their <span class="q-num-inline">2</span><input class="q-input" id="q2" style="width:130px" type="text" placeholder="answer…" maxlength="20" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"><span class="correct-ans" id="ca2"></span> was designed to give them an interest in activities such as collecting art</span></div>
+            <div class="note-row"><span class="note-text">their governess took them on trips to art galleries</span></div>
+            <div class="note-row"><span class="note-text">they took lengthy <span class="q-num-inline">3</span><input class="q-input" id="q3" style="width:130px" type="text" placeholder="answer…" maxlength="20" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"><span class="correct-ans" id="ca3"></span> about the things they saw in art galleries</span></div>
+            <div style="font-size:14px;font-weight:700;color:var(--blue);margin:12px 0 8px">The sisters as art collectors</div>
+            <div class="note-row"><span class="note-text">their <span class="q-num-inline">4</span><input class="q-input" id="q4" style="width:130px" type="text" placeholder="answer…" maxlength="20" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"><span class="correct-ans" id="ca4"></span> showed they liked Old Master paintings, but they were expensive to buy</span></div>
+            <div class="note-row"><span class="note-text">their early purchases were safe, popular paintings</span></div>
+            <div class="note-row"><span class="note-text">the first Impressionist paintings they bought showed places in <span class="q-num-inline">5</span><input class="q-input" id="q5" style="width:130px" type="text" placeholder="answer…" maxlength="20" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"><span class="correct-ans" id="ca5"></span></span></div>
+            <div style="font-size:14px;font-weight:700;color:var(--blue);margin:12px 0 8px">Impact of First World War</div>
+            <div class="note-row"><span class="note-text">they helped bring artists from Belgium to Wales</span></div>
+            <div class="note-row"><span class="note-text">they worked in a <span class="q-num-inline">6</span><input class="q-input" id="q6" style="width:130px" type="text" placeholder="answer…" maxlength="20" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"><span class="correct-ans" id="ca6"></span> for soldiers in France</span></div>
+            <div style="font-size:14px;font-weight:700;color:var(--blue);margin:12px 0 8px">Opinions about the sisters as art collectors</div>
+            <div class="note-row"><span class="note-text">were not considered typical collectors – they lived in isolation in the countryside and did not have any <span class="q-num-inline">7</span><input class="q-input" id="q7" style="width:130px" type="text" placeholder="answer…" maxlength="20" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"><span class="correct-ans" id="ca7"></span> who were artists</span></div>
+          </div>
+        </div>
+
+        <div class="q-section">
+          <div class="q-section-title">Questions 8–13</div>
+          <div class="q-section-instruction">Do the following statements agree with the information given in Reading Passage 1?<br>Write <strong>TRUE</strong>, <strong>FALSE</strong> or <strong>NOT GIVEN</strong> for each answer.</div>
+          <div class="q-row">
+            <span class="q-num-cell">8</span>
+            <span class="q-label">The Davies sisters' childhood influenced the way they decided to use their wealth.</span>
+            <select class="q-select" id="q8" onchange="saveDraftDebounced()"><option value="">—</option><option>TRUE</option><option>FALSE</option><option>NOT GIVEN</option></select>
+            <span class="correct-ans" id="ca8"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">9</span>
+            <span class="q-label">The Jean-Baptiste-Camille Corot paintings in the Davies sisters' collection were purchased from a gallery in France.</span>
+            <select class="q-select" id="q9" onchange="saveDraftDebounced()"><option value="">—</option><option>TRUE</option><option>FALSE</option><option>NOT GIVEN</option></select>
+            <span class="correct-ans" id="ca9"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">10</span>
+            <span class="q-label">Hugh Blaker opposed the Davies sisters' decision to buy art by French Impressionists.</span>
+            <select class="q-select" id="q10" onchange="saveDraftDebounced()"><option value="">—</option><option>TRUE</option><option>FALSE</option><option>NOT GIVEN</option></select>
+            <span class="correct-ans" id="ca10"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">11</span>
+            <span class="q-label">The exhibition of Cézanne paintings at the Bath gallery was very popular with the public.</span>
+            <select class="q-select" id="q11" onchange="saveDraftDebounced()"><option value="">—</option><option>TRUE</option><option>FALSE</option><option>NOT GIVEN</option></select>
+            <span class="correct-ans" id="ca11"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">12</span>
+            <span class="q-label">The impact of the First World War encouraged Gwendoline to reconsider her interest in collecting art.</span>
+            <select class="q-select" id="q12" onchange="saveDraftDebounced()"><option value="">—</option><option>TRUE</option><option>FALSE</option><option>NOT GIVEN</option></select>
+            <span class="correct-ans" id="ca12"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">13</span>
+            <span class="q-label">The Davies sisters bought French Impressionist art during a period when very few people were doing so.</span>
+            <select class="q-select" id="q13" onchange="saveDraftDebounced()"><option value="">—</option><option>TRUE</option><option>FALSE</option><option>NOT GIVEN</option></select>
+            <span class="correct-ans" id="ca13"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= PASSAGE 2 ========= -->
+  <div class="tab-content" id="p2">
+    <div class="split-wrap">
+      <div class="passage-panel">
+        <div class="passage-title">Why we need silence</div>
+        <div class="passage-body">
+          <p><span class="para-label">A</span>Humans are finely attuned to noise, and for good reason. From an evolutionary perspective, sounds give us vital information, helping us navigate the world and avoid danger. To help ensure loud or unexpected noises get the attention they deserve, our internal chemistry alters in response to them. Our blood pressure goes up, muscles tense and glands release hormones that prepare us for fight or flight. In the short term, this is a good thing. When we are exposed to too much noise over the long term, however, those responses can lead to a multitude of health issues, from sleep disturbance to even cardiovascular disease.</p>
+          <p><span class="para-label">B</span>The World Health Organization has recently designated excessive noise as an 'underestimated threat' to public health, and has said that people living in cities such as Mumbai, Tokyo and Buenos Aires are being exposed to far more than the recommended 40 decibels of noise at night. A report from the European Environment Agency concluded that noise was an ongoing and widespread issue in Europe, with at least 1 in 5 people consistently exposed to levels considered harmful to health. 'There are no "earlids" that can protect your brain from noise,' says Nick Antonio, an acoustic consultant who has contributed to the British and international standards for noise.</p>
+          <p><span class="para-label">C</span>The good news is that several cities have been working to turn the volume down. One of the first to do so was London. 'By providing recommendations for quieter buses, reducing noise from roads and also controlling noise from aircraft, they were able to make the city quieter,' says Antonio. Other cities have introduced noise-reducing road coatings, for instance, alongside greenery that muffles sound. Some solutions are more specific: Washington DC's ban on petrol-powered leaf blowers came into effect recently, while in New York City, legislation has been approved to fine people who modify their vehicles to make them noisier. 'People are seeing the benefits of these more quiet environments in their cities,' Antonio says. 'I expect we will see much more of this in the future.'</p>
+          <p><span class="para-label">D</span>Researchers are also seeking to understand what aspects of silent experiences are most beneficial to our health. One of the best-researched is the flotation tank: a lightproof, soundproof tank of salt water in which a person floats as a form of deep relaxation. While some people experience altered perception in the tanks, involving subtle humming sounds and visual effects, these effects are benign and do not detract from the benefits of the experience, says Justin Feinstein, a clinical neuropsychologist. 'When you don't have external sensory stimuli coming in, the brain tries to fill the void to make sense of this dark and silent world,' he explains. 'In these tanks, some people can even hear the sound of their eyes blinking,' says Feinstein. 'But it is the ability to focus on the <strong>breath</strong> that helps people reach a relaxed or meditative state.'</p>
+          <p><span class="para-label">E</span>To further explore flotation tanks as a therapeutic tool, Feinstein and his colleagues recruited 50 people with a variety of conditions related to stress and had them answer a <strong>questionnaire</strong> prior to and following a flotation session. Participants reported decreases in muscle tension, pain and symptoms of their conditions after a single, 1-hour float, alongside an increase in feelings of relaxation and overall <strong>wellbeing</strong>. Less is known about what effects sensory deprivation can have on the brain. To investigate, Feinstein's team had 48 people participate in either three 90-minute float sessions or three 90-minute periods of relaxing on a chair which reclined. Participants had their brains scanned using functional magnetic resonance imaging at the beginning and end of the trial. Float sessions uniquely decreased activity in the default mode network (DMN), a collection of brain regions commonly linked with <strong>depression</strong>. Feinstein says it is an exciting finding, because flotation tanks seem to offer a way of 'resetting' our nervous system to prevent it from getting out of balance.</p>
+          <p><span class="para-label">F</span>Neurobiologist Tai Dotan Ben-Soussan is also an advocate of silence as a therapy. 'When we find ways to be quiet, we are not only quiet in our environment, but quiet in our inner selves,' she explains. 'This allows us to be more aware of what is happening around us and what the situation may require from us so we can provide [a more] adequate response.' Not everyone will benefit from silence to the same extent, but Ben-Soussan says one characteristic is key: the person must need to want to engage in the experience. 'We see from animal models and human studies that volition and intentionality is important,' she says. 'When people do not want silence, it can be very distressing.'</p>
+          <p><span class="para-label">G</span>Eric Pfeifer, a psychotherapy researcher, also concedes that some people may not benefit from silence, particularly those who are in a heightened state of stress. 'People in these states may not be able to relax or calm down in a silent condition,' he says. Professional guidance can be useful, he adds, allowing people to approach silence slowly so that they can gradually enjoy the benefits. And Pfeifer is convinced that silence is more attainable in everyday life than people think. First, complete silence isn't necessary. In a recent study, he found that participants reported more relaxation and less boredom when they sat quietly in an outdoor garden compared with a completely silent room. Second, Pfeifer believes we don't need a lot of silence to gain benefits. 'You don't need to spend hours in silence,' he says. 'It is likely better to have more frequency of silence for a few minutes at a time than a longer period of silence only once a week. Just finding those places in your daily life where you can find some silence … can make a big difference.'</p>
+        </div>
+      </div>
+
+      <div class="questions-panel">
+        <div class="q-section">
+          <div class="q-section-title">Questions 14–17</div>
+          <div class="q-section-instruction">Reading Passage 2 has seven sections, <strong>A–G</strong>.<br>Which section contains the following information?<br>Write the correct letter, <strong>A–G</strong>.</div>
+          <div class="q-row">
+            <span class="q-num-cell">14</span>
+            <span class="q-label">examples of strategies to decrease the noise that the public are exposed to</span>
+            <select class="q-select" id="q14" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+            <span class="correct-ans" id="ca14"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">15</span>
+            <span class="q-label">data indicating the extent of the problem of excessive noise</span>
+            <select class="q-select" id="q15" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+            <span class="correct-ans" id="ca15"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">16</span>
+            <span class="q-label">a description of physiological changes in our bodies when we hear sudden noises</span>
+            <select class="q-select" id="q16" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+            <span class="correct-ans" id="ca16"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">17</span>
+            <span class="q-label">evidence that a relatively quiet environment can be more beneficial than a totally silent one</span>
+            <select class="q-select" id="q17" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+            <span class="correct-ans" id="ca17"></span>
+          </div>
+        </div>
+
+        <div class="q-section">
+          <div class="q-section-title">Questions 18–21</div>
+          <div class="q-section-instruction">Complete the summary below.<br>Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</div>
+          <div class="q-section" style="background:#f9fafc;border:none;padding:16px;">
+            <div style="font-size:15px;font-weight:700;color:#333;text-align:center;margin-bottom:12px">Flotation Tanks</div>
+            <div class="note-row"><span class="note-text">According to Justin Feinstein, flotation tanks allow people to concentrate on their own <span class="q-num-inline">18</span><input class="q-input" id="q18" style="width:130px" type="text" placeholder="answer…" maxlength="20" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"><span class="correct-ans" id="ca18"></span>, which helps them relax and enables them to meditate.</span></div>
+            <div class="note-row"><span class="note-text">Feinstein and his colleagues conducted an experiment in which 50 people, who were all suffering from stress and related issues, were given a <span class="q-num-inline">19</span><input class="q-input" id="q19" style="width:130px" type="text" placeholder="answer…" maxlength="20" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"><span class="correct-ans" id="ca19"></span> to complete before and after using a flotation tank. Participants reported a reduction in their symptoms after an hour in the tank, together with signs of relaxation and improved general <span class="q-num-inline">20</span><input class="q-input" id="q20" style="width:130px" type="text" placeholder="answer…" maxlength="20" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"><span class="correct-ans" id="ca20"></span>.</span></div>
+            <div class="note-row"><span class="note-text">In another experiment, the researchers had 48 people spend periods of 90 minutes either lying back in a chair or floating in a tank. Brain scans then revealed that those people who had been in a tank had decreased activity in parts of the brain associated with <span class="q-num-inline">21</span><input class="q-input" id="q21" style="width:130px" type="text" placeholder="answer…" maxlength="20" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"><span class="correct-ans" id="ca21"></span>.</span></div>
+          </div>
+        </div>
+
+        <div class="q-section">
+          <div class="q-section-title">Questions 22–26</div>
+          <div class="q-section-instruction">Look at the following statements and the list of people below.<br>Match each statement with the correct person, <strong>A, B, C</strong> or <strong>D</strong>.<br><em>NB You may use any letter more than once.</em></div>
+          <div class="ref-box">
+            <strong>List of People</strong><br>
+            <strong>A</strong> Nick Antonio &nbsp;|&nbsp; <strong>B</strong> Justin Feinstein &nbsp;|&nbsp; <strong>C</strong> Tai Dotan Ben-Soussan &nbsp;|&nbsp; <strong>D</strong> Eric Pfeifer
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">22</span>
+            <span class="q-label">It is unpleasant and upsetting for people to be placed in a silent environment against their will.</span>
+            <select class="q-select" id="q22" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option></select>
+            <span class="correct-ans" id="ca22"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">23</span>
+            <span class="q-label">The trend towards creating quieter urban locations is likely to increase in the coming years.</span>
+            <select class="q-select" id="q23" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option></select>
+            <span class="correct-ans" id="ca23"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">24</span>
+            <span class="q-label">When our body's senses are completely deprived of input, our minds compensate for this by creating the illusion of images and sounds.</span>
+            <select class="q-select" id="q24" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option></select>
+            <span class="correct-ans" id="ca24"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">25</span>
+            <span class="q-label">Even a short amount of silent time can have a positive impact.</span>
+            <select class="q-select" id="q25" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option></select>
+            <span class="correct-ans" id="ca25"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">26</span>
+            <span class="q-label">External and internal quietness makes us more conscious of events occurring in our surroundings and helps us react appropriately to these events.</span>
+            <select class="q-select" id="q26" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option></select>
+            <span class="correct-ans" id="ca26"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========= PASSAGE 3 ========= -->
+  <div class="tab-content" id="p3">
+    <div class="split-wrap">
+      <div class="passage-panel">
+        <div class="passage-title">Book review: <em>The World of Sugar</em> by Ulbe Bosma</div>
+        <div class="passage-body">
+          <p>Ulbe Bosma's <em>The World of Sugar</em> is a genuinely global history. Bosma discusses all the sugar-growing places of the world, beginning with Cuba and Java, the largest exporters of the early 20th century. But this is a history not just of cane sugar but also of beet sugar, an equally important form of traded sugar over the last hundred years. Beet sugar is grown mainly in Europe and the United States. It has also been massively subsidised and sold at artificially low prices on world markets, threatening the livelihood of producers of cane sugar.</p>
+          <p>Bosma's discussion of the sugar market in Britain gives a sense of the book's range. The sweet-toothed British first bought cane sugar from their own slavery-dependent colonial plantations. Following the abolition of slavery in the British Empire, cane sugar was imported to Britain from places which retained the practice, such as Cuba and Brazil. Towards the end of the 19th century, the British started to import beet sugar from continental Europe. Only in the 20th century was there a move to develop a national beet sugar industry.</p>
+          <p>The book provides a global labour history, investigating the wide range of labour regimes associated with growing sugar. Contrary to popular belief, cane sugar production was never just restricted to large, dedicated plantations owned by rich men. For example, in Java, a huge exporter of sugar in the early 20th century, sugar cane was grown together with rice in an extraordinarily labour-intensive way by small farmers.</p>
+          <p><em>The World of Sugar</em> is also a story of similarity and continuity in sugar cultivation. For example, imported labour has been used for much large-scale production. German beet fields employed Polish workers; Mexicans and many others, including Sicilians, were vital to US sugar production. Cane cutting, Bosma shows, remains a poorly paid and brutal business to this day in many places in the world. But as well as this, the book is about the continuity of the use of traditional methods on small farms. In the mid 20th-century, this type of sugar production dominated in South Asia and Latin America.</p>
+          <p>This is also a history of capitalists and sugar dynasties, as well as corporations that in some cases have remained influential over very long periods. Great firms and great interests have had profound influence on the policies of states. In many places — not just the British Caribbean but Cuba and the Philippines too — a powerful sugar bourgeoisie played a major role in politics and their interests were consequently protected by trade barriers and subsidies. In the battle for control of the industry, it was inevitably the poor countries which came off worse. All this is explored by Bosma with wonderful subtlety and control.</p>
+          <p>But sugar production was never just a matter of agriculture. It also involved the extraction, close to the place of harvest, of sucrose from the sugar plant, a process which required machinery powered by humans, animals, wind or steam. Further processes involved boiling (from the 19th century, this often involved vacuum systems) and the separation of sugar from other materials in a process known as refinement. From very early on, sugar production was an energy-intensive industrial process, mostly taking place in the countryside and in refineries in centres of consumption, both small and large. The growth of the industry entailed a very rapid diffusion of ideas and techniques from one country to another. Cuba, for example, developed an extraordinarily dense system of railways to transport workers and cane, as well as steam-powered sugar factories. Particular varieties of cane sugar and beet sugar spread very rapidly across the world, in accordance with local needs and demands.</p>
+          <p>Where once only tiny quantities of sugar could be produced, now new techniques, varieties, fertilisers, irrigation systems and much more have turned gleaming white sugar into a ubiquitous chemical. Over the same time, there has been a massive increase in consumption. Once regarded as a luxury, sugar came to be promoted as a valuable source of energy. But as the consumption of sugar has increased, so has the harm it does, whether to people's teeth or weight. In the face of appalling obstruction from the sugar industry to attempts to reduce consumption, some countries have been forced to tax sugar in order to bring that about. The sugar industry has a history of attacking its critics and, when it comes to obesity, of trying to blame fats, and lack of exercise and self-control. And the recent past has seen worrying new developments in mass sweetening. High-fructose corn syrup made from maize using an enzymatic process invented in Japan in the 1960s has a similar number of calories to table sugar but is far cheaper to produce. It is now widely consumed, having been adopted in the making of soft drinks and a large number of processed foods, and is regarded as a leading cause of obesity.</p>
+          <p>This is a wonderfully rich book, a model of global history, the history of production and the history of capitalism. Bosma avoids outbursts of emotion, celebratory or critical, even if they might have made his analysis of the multiple tragedies involving sugar all the more powerful. He shows that we could always have done without sugar and that today we have many alternative sources of sweetness. Yet many of the poorest people in the world still depend on it to make a living.</p>
+        </div>
+      </div>
+
+      <div class="questions-panel">
+        <div class="q-section">
+          <div class="q-section-title">Questions 27–30</div>
+          <div class="q-section-instruction">Choose the correct letter, <strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong>.</div>
+
+          <div style="margin-bottom:18px">
+            <div class="q-stem"><span style="font-weight:700;color:var(--blue)">27</span> &nbsp;What does the reviewer suggest about the cultivation and trading of sugar in the first paragraph?</div>
+            <div class="mc-group" id="g27">
+              <label><input type="radio" name="q27" value="A" onchange="updateRadio('g27')"><span class="mc-letter">A</span> Sugar has played a major role in international relations.</label>
+              <label><input type="radio" name="q27" value="B" onchange="updateRadio('g27')"><span class="mc-letter">B</span> Beet sugar has been made more internationally competitive.</label>
+              <label><input type="radio" name="q27" value="C" onchange="updateRadio('g27')"><span class="mc-letter">C</span> Cane sugar is thought to be of superior quality to beet sugar.</label>
+              <label><input type="radio" name="q27" value="D" onchange="updateRadio('g27')"><span class="mc-letter">D</span> New locations for cultivating sugar have increased production.</label>
+            </div>
+          </div>
+          <div style="margin-bottom:18px">
+            <div class="q-stem"><span style="font-weight:700;color:var(--blue)">28</span> &nbsp;In the second paragraph, when discussing the sugar market in Britain, the reviewer stresses</div>
+            <div class="mc-group" id="g28">
+              <label><input type="radio" name="q28" value="A" onchange="updateRadio('g28')"><span class="mc-letter">A</span> how the sources used changed over time.</label>
+              <label><input type="radio" name="q28" value="B" onchange="updateRadio('g28')"><span class="mc-letter">B</span> how developments in agriculture affected trade.</label>
+              <label><input type="radio" name="q28" value="C" onchange="updateRadio('g28')"><span class="mc-letter">C</span> the increased demand for sugar over the years.</label>
+              <label><input type="radio" name="q28" value="D" onchange="updateRadio('g28')"><span class="mc-letter">D</span> the growing support for ethical methods of cultivation.</label>
+            </div>
+          </div>
+          <div style="margin-bottom:18px">
+            <div class="q-stem"><span style="font-weight:700;color:var(--blue)">29</span> &nbsp;What is the reviewer doing in the third paragraph?</div>
+            <div class="mc-group" id="g29">
+              <label><input type="radio" name="q29" value="A" onchange="updateRadio('g29')"><span class="mc-letter">A</span> describing an efficient approach to sugar cultivation</label>
+              <label><input type="radio" name="q29" value="B" onchange="updateRadio('g29')"><span class="mc-letter">B</span> explaining why the use of sugar plantations declined</label>
+              <label><input type="radio" name="q29" value="C" onchange="updateRadio('g29')"><span class="mc-letter">C</span> addressing a misconception about the growing of sugar cane</label>
+              <label><input type="radio" name="q29" value="D" onchange="updateRadio('g29')"><span class="mc-letter">D</span> evaluating different approaches to the cultivation of sugar cane</label>
+            </div>
+          </div>
+          <div style="margin-bottom:18px">
+            <div class="q-stem"><span style="font-weight:700;color:var(--blue)">30</span> &nbsp;In the final paragraph, what does the reviewer suggest is the overall message of Bosma's book?</div>
+            <div class="mc-group" id="g30">
+              <label><input type="radio" name="q30" value="A" onchange="updateRadio('g30')"><span class="mc-letter">A</span> Sugar is a harmful and unnecessary product.</label>
+              <label><input type="radio" name="q30" value="B" onchange="updateRadio('g30')"><span class="mc-letter">B</span> Economic pressure is needed to control sugar production.</label>
+              <label><input type="radio" name="q30" value="C" onchange="updateRadio('g30')"><span class="mc-letter">C</span> Conditions for workers in sugar production should be improved.</label>
+              <label><input type="radio" name="q30" value="D" onchange="updateRadio('g30')"><span class="mc-letter">D</span> Intensive marketing of sugar has had disastrous consequences.</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-section">
+          <div class="q-section-title">Questions 31–36</div>
+          <div class="q-section-instruction">Complete the summary using the list of words, <strong>A–I</strong>, below.</div>
+          <div class="ref-box">
+            <strong>A</strong> national governments &nbsp;|&nbsp; <strong>B</strong> agricultural developments &nbsp;|&nbsp; <strong>C</strong> less wealthy nations<br>
+            <strong>D</strong> untrained workers &nbsp;|&nbsp; <strong>E</strong> small-scale cultivation &nbsp;|&nbsp; <strong>F</strong> outdated methods<br>
+            <strong>G</strong> financial controls &nbsp;|&nbsp; <strong>H</strong> migrant workers &nbsp;|&nbsp; <strong>I</strong> powerful individuals and businesses
+          </div>
+          <div class="q-section" style="background:#f9fafc;border:none;padding:16px;">
+            <div style="font-size:15px;font-weight:700;color:#333;text-align:center;margin-bottom:12px">Sugar cultivation and production</div>
+            <div class="note-row"><span class="note-text">The book <em>The World of Sugar</em> points out the similarities in the way that sugar was cultivated around the world. In the big industries in both Germany and the US, sugar farming depended on <span class="q-num-inline">31</span><select class="q-select" id="q31" style="min-width:80px" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option></select><span class="correct-ans" id="ca31"></span>. However, in other parts of the world such as South Asia and Latin America, <span class="q-num-inline">32</span><select class="q-select" id="q32" style="min-width:80px" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option></select><span class="correct-ans" id="ca32"></span> continued.</span></div>
+            <div class="note-row"><span class="note-text">Sugar production has also involved <span class="q-num-inline">33</span><select class="q-select" id="q33" style="min-width:80px" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option></select><span class="correct-ans" id="ca33"></span> who were eager to protect their markets. In countries such as Cuba the sugar industry therefore had a major influence on <span class="q-num-inline">34</span><select class="q-select" id="q34" style="min-width:80px" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option></select><span class="correct-ans" id="ca34"></span>.</span></div>
+            <div class="note-row"><span class="note-text">To support the interests of sugar producers, <span class="q-num-inline">35</span><select class="q-select" id="q35" style="min-width:80px" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option></select><span class="correct-ans" id="ca35"></span> were established. As a result of this, <span class="q-num-inline">36</span><select class="q-select" id="q36" style="min-width:80px" onchange="saveDraftDebounced()"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option></select><span class="correct-ans" id="ca36"></span> were penalised.</span></div>
+          </div>
+        </div>
+
+        <div class="q-section">
+          <div class="q-section-title">Questions 37–40</div>
+          <div class="q-section-instruction">Do the following statements agree with the views of the writer in Reading Passage 3?<br>Write <strong>YES</strong>, <strong>NO</strong> or <strong>NOT GIVEN</strong> for each answer.</div>
+          <div class="q-row">
+            <span class="q-num-cell">37</span>
+            <span class="q-label">Sugar has now become available in large quantities due to a range of agricultural developments.</span>
+            <select class="q-select" id="q37" onchange="saveDraftDebounced()"><option value="">—</option><option>YES</option><option>NO</option><option>NOT GIVEN</option></select>
+            <span class="correct-ans" id="ca37"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">38</span>
+            <span class="q-label">Advertisers initially marketed sugar as a luxury product.</span>
+            <select class="q-select" id="q38" onchange="saveDraftDebounced()"><option value="">—</option><option>YES</option><option>NO</option><option>NOT GIVEN</option></select>
+            <span class="correct-ans" id="ca38"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">39</span>
+            <span class="q-label">The invention of high-fructose corn syrup was a positive development.</span>
+            <select class="q-select" id="q39" onchange="saveDraftDebounced()"><option value="">—</option><option>YES</option><option>NO</option><option>NOT GIVEN</option></select>
+            <span class="correct-ans" id="ca39"></span>
+          </div>
+          <div class="q-row">
+            <span class="q-num-cell">40</span>
+            <span class="q-label">High-fructose corn syrup is an ingredient in many processed foods.</span>
+            <select class="q-select" id="q40" onchange="saveDraftDebounced()"><option value="">—</option><option>YES</option><option>NO</option><option>NOT GIVEN</option></select>
+            <span class="correct-ans" id="ca40"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUBMIT MODAL ── -->
+<div id="submitModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:14px;padding:36px 32px;max-width:420px;width:90%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.25);">
+    <div style="font-size:50px;margin-bottom:12px">📋</div>
+    <h3 style="margin:0 0 10px;font-size:20px;color:#002d72;">Submit Test?</h3>
+    <p style="color:#444;font-size:14.5px;line-height:1.6;margin:0 0 22px;">Are you sure you want to submit? You cannot change your answers after submitting.</p>
+    <div style="display:flex;gap:12px;justify-content:center;">
+      <button style="padding:10px 22px;border:2px solid #bbb;border-radius:8px;background:#fff;color:#555;font-size:14px;cursor:pointer;font-weight:600;" onclick="closeSubmitModal()">Review More</button>
+      <button style="padding:10px 22px;border:none;border-radius:8px;background:#c62828;color:#fff;font-size:14px;cursor:pointer;font-weight:700;" onclick="submitTest()">Submit Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESULT SCREEN ── -->
+<div id="resultScreen">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:24px">
+    <div style="background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.12);max-width:520px;width:100%;text-align:center;padding:48px 40px">
+      <div style="font-size:64px;margin-bottom:16px">✅</div>
+      <h2 style="font-size:24px;font-weight:700;color:var(--blue);margin-bottom:10px">Test Completed!</h2>
+      <p id="resultInfo" style="font-size:15px;color:#555;margin-bottom:24px"></p>
+      <div style="background:#f0f7ff;border-radius:10px;padding:18px 24px;margin-bottom:24px;font-size:15px;color:#333;line-height:1.8">
+        Your results have been recorded and<br>
+        <strong>automatically sent to your teacher</strong>.<br>
+        You will receive feedback from your teacher as soon as possible.
+      </div>
+      <div id="emailStatus" style="font-size:14px;color:var(--neutral);margin-top:4px">✉ Sending results to teacher…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let studentName='', studentDOB='', examStartTime='';
+let timeLeft=3600, timerInt=null, submitted=false;
+let draftSaveTimer=null;
+const DRAFT_KEY='ielts_reading_mock03';
+
+// ── DRAFT ──
+function saveDraft(){
+  if(submitted||!studentName) return;
+  try{
+    const ans={};
+    for(let i=1;i<=40;i++){
+      const el=document.getElementById('q'+i);
+      if(el) ans['q'+i]=el.value;
+    }
+    localStorage.setItem(DRAFT_KEY,JSON.stringify({
+      name:studentName,dob:studentDOB,ans,
+      timeLeft,savedAt:new Date().toISOString()
+    }));
+  }catch(e){}
+}
+function saveDraftDebounced(){
+  clearTimeout(draftSaveTimer);
+  draftSaveTimer=setTimeout(saveDraft,2000);
+}
+function clearDraft(){ try{localStorage.removeItem(DRAFT_KEY);}catch(e){} }
+function checkReadingDraft(){
+  try{
+    const raw=localStorage.getItem(DRAFT_KEY);
+    if(!raw) return;
+    const d=JSON.parse(raw);
+    if(!d||!d.name) return;
+    const t=new Date(d.savedAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('draftName').textContent=d.name;
+    document.getElementById('draftTime').textContent=t;
+    document.getElementById('modalDraft').style.display='flex';
+  }catch(e){}
+}
+function restoreReadingDraft(){
+  try{
+    const d=JSON.parse(localStorage.getItem(DRAFT_KEY));
+    if(!d){document.getElementById('modalDraft').style.display='none';return;}
+    document.getElementById('studentName').value=d.name||'';
+    document.getElementById('studentDOB').value=d.dob||'';
+    document.getElementById('modalDraft').style.display='none';
+    startExam();
+    if(d.timeLeft>0) timeLeft=d.timeLeft;
+    if(d.ans){
+      Object.entries(d.ans).forEach(([id,val])=>{
+        const el=document.getElementById(id);
+        if(el) el.value=val;
+      });
+    }
+    // re-apply radio selections
+    for(let q=27;q<=30;q++){
+      const val=d.ans?.['q'+q];
+      if(val){
+        const r=document.querySelector(`input[name="q${q}"][value="${val}"]`);
+        if(r){r.checked=true;updateRadio('g'+q);}
+      }
+    }
+  }catch(e){document.getElementById('modalDraft').style.display='none';}
+}
+function discardReadingDraft(){clearDraft();document.getElementById('modalDraft').style.display='none';}
+
+document.addEventListener('input',e=>{
+  if(['q-input','q-select'].some(c=>e.target.classList.contains(c))) saveDraftDebounced();
+});
+document.addEventListener('change',e=>{
+  if(e.target.type==='radio') saveDraftDebounced();
+});
+window.addEventListener('beforeunload',e=>{
+  if(studentName&&!submitted){saveDraft();e.preventDefault();return e.returnValue='';}
+});
+window.addEventListener('load',()=>{checkReadingDraft();setInterval(saveDraft,30000);});
+
+// ── TABS ──
+function switchTab(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab'+id[0].toUpperCase()+id.slice(1)).classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+function updateRadio(gid){
+  const g=document.getElementById(gid);
+  if(!g) return;
+  g.querySelectorAll('label').forEach(l=>l.classList.toggle('selected',l.querySelector('input').checked));
+}
+
+// ── EXAM ──
+function startExam(){
+  const name=document.getElementById('studentName').value.trim();
+  const dob=document.getElementById('studentDOB').value;
+  if(!name){alert('Please enter your full name.');return;}
+  if(!dob){alert('Please enter your date of birth.');return;}
+  studentName=name; studentDOB=dob;
+  examStartTime=new Date().toLocaleString('en-GB');
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('examScreen').style.display='flex';
+  document.getElementById('hdrCandidate').textContent='Candidate: '+name;
+  document.getElementById('hdrDate').textContent='Date: '+new Date().toLocaleDateString('en-GB');
+  timerInt=setInterval(tickTimer,1000);
+}
+function tickTimer(){
+  timeLeft--;
+  const m=Math.floor(timeLeft/60),s=timeLeft%60;
+  const el=document.getElementById('timerCircle');
+  el.textContent=m+':'+(s<10?'0':'')+s;
+  if(timeLeft<=300) el.classList.add('urgent');
+  if(timeLeft<=0){clearInterval(timerInt);submitTest();}
+}
+
+// ── SUBMIT ──
+function openSubmitModal(){
+  document.getElementById('submitModal').style.display='flex';
+}
+function closeSubmitModal(){
+  document.getElementById('submitModal').style.display='none';
+}
+function submitTest(){
+  if(submitted) return;
+  submitted=true; clearInterval(timerInt); clearDraft();
+  document.getElementById('submitModal').style.display='none';
+  const {score,details}=scoreAll();
+  document.getElementById('resultInfo').textContent=studentName+' · '+examStartTime;
+  document.getElementById('examScreen').style.display='none';
+  document.getElementById('resultScreen').style.display='block';
+  setTimeout(()=>sendToTeacher(score,details),2000);
+}
+
+// ── SCORING ──
+const ANSWER_KEY={
+  1:'mining',2:'education',3:'notes',4:'journals',5:'venice',6:'canteen',7:'friends',
+  8:'TRUE',9:'NOT GIVEN',10:'FALSE',11:'NOT GIVEN',12:'TRUE',13:'TRUE',
+  14:'C',15:'B',16:'A',17:'G',
+  18:'breath',19:'questionnaire',20:'wellbeing',21:'depression',
+  22:'C',23:'A',24:'B',25:'D',26:'C',
+  27:'B',28:'A',29:'C',30:'A',
+  31:'H',32:'E',33:'I',34:'A',35:'G',36:'C',
+  37:'YES',38:'NOT GIVEN',39:'NO',40:'YES'
+};
+function scoreAll(){
+  let score=0; const details={};
+  const textQ=[1,2,3,4,5,6,7,18,19,20,21];
+  for(const q of textQ){
+    const el=document.getElementById('q'+q);
+    const ans=(el?el.value.trim():'').toLowerCase();
+    const correct=ANSWER_KEY[q].toLowerCase();
+    const ok=ans===correct;
+    if(ok) score++;
+    details[q]={student:ans,correct:ANSWER_KEY[q],ok};
+  }
+  const selectQ=[8,9,10,11,12,13,14,15,16,17,22,23,24,25,26,31,32,33,34,35,36,37,38,39,40];
+  for(const q of selectQ){
+    const el=document.getElementById('q'+q);
+    const ans=el?el.value:'';
+    const ok=ans===ANSWER_KEY[q];
+    if(ok) score++;
+    details[q]={student:ans,correct:ANSWER_KEY[q],ok};
+  }
+  const radioQ=[27,28,29,30];
+  for(const q of radioQ){
+    const r=document.querySelector(`input[name="q${q}"]:checked`);
+    const ans=r?r.value:'';
+    const ok=ans===ANSWER_KEY[q];
+    if(ok) score++;
+    details[q]={student:ans,correct:ANSWER_KEY[q],ok};
+  }
+  return {score,details};
+}
+
+// ── PDF ──
+function pdfSafe(s){
+  if(!s) return '';
+  return s
+    .replace(/[àáảãạăằắẳẵặâầấẩẫậ]/g,'a').replace(/[ÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬ]/g,'A')
+    .replace(/đ/g,'d').replace(/Đ/g,'D')
+    .replace(/[èéẻẽẹêềếểễệ]/g,'e').replace(/[ÈÉẺẼẸÊỀẾỂỄỆ]/g,'E')
+    .replace(/[ìíỉĩị]/g,'i').replace(/[ÌÍỈĨỊ]/g,'I')
+    .replace(/[òóỏõọôồốổỗộơờớởỡợ]/g,'o').replace(/[ÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢ]/g,'O')
+    .replace(/[ùúủũụưừứửữự]/g,'u').replace(/[ÙÚỦŨỤƯỪỨỬỮỰ]/g,'U')
+    .replace(/[ỳýỷỹỵ]/g,'y').replace(/[ỲÝỶỸỴ]/g,'Y');
+}
+function formatDOB(d){return d?new Date(d).toLocaleDateString('en-GB'):'';}
+
+function buildPDFDoc(score,details){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const W=210,H=297,M=18,safeName=pdfSafe(studentName);
+
+  doc.setFillColor(0,45,114);doc.rect(0,0,W,36,'F');
+  doc.setFillColor(200,164,0);doc.rect(0,36,W,1.5,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(20);
+  doc.text('IELTS Reading Mock Test',W/2,13,{align:'center'});
+  doc.setFontSize(10);doc.setFont('helvetica','normal');
+  doc.text('Student Result Report  ·  Huong Stella Paradigm',W/2,22,{align:'center'});
+  doc.setFontSize(9);doc.text('Date: '+examStartTime,W/2,30,{align:'center'});
+
+  let y=45;
+  const CW=W-M*2;
+  doc.setFillColor(240,244,252);doc.setDrawColor(0,45,114);doc.setLineWidth(0.6);
+  doc.roundedRect(M,y,CW,30,2,2,'FD');
+  doc.setTextColor(0,45,114);doc.setFont('helvetica','bold');doc.setFontSize(9);
+  doc.text('CANDIDATE INFORMATION',M+5,y+7);
+  doc.setTextColor(40,40,40);doc.setFontSize(10);
+  const half=CW/2;
+  [['Full Name',safeName],['Date of Birth',formatDOB(studentDOB)],
+   ['Test Date',examStartTime.split(',')[0]||examStartTime],['Test Name','IELTS Reading Mock Test 3']
+  ].forEach((r,i)=>{
+    const col=i<2?0:1,row=i%2,rx=M+5+col*half,ry=y+15+row*9;
+    doc.setFont('helvetica','bold');doc.text(r[0]+': ',rx,ry);
+    const lw=doc.getTextWidth(r[0]+': ');
+    doc.setFont('helvetica','normal');doc.text(r[1],rx+lw,ry);
+  });
+  y+=38;
+
+  const pct=Math.round(score/40*100);
+  doc.setFillColor(0,45,114);doc.roundedRect(M,y,CW,28,4,4,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(28);
+  doc.text('Score: '+score+' / 40',W/2,y+13,{align:'center'});
+  doc.setFontSize(13);doc.text('Percentage: '+pct+'%',W/2,y+23,{align:'center'});
+  y+=34;
+
+  // Part scores
+  const p1s=[1,2,3,4,5,6,7,8,9,10,11,12,13];
+  const p2s=[14,15,16,17,18,19,20,21,22,23,24,25,26];
+  const p3s=[27,28,29,30,31,32,33,34,35,36,37,38,39,40];
+  const ps=[p1s,p2s,p3s];
+  const plbls=['Passage 1 (Q1–13)','Passage 2 (Q14–26)','Passage 3 (Q27–40)'];
+  doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(0,51,102);
+  doc.text('PASSAGE SCORES',M,y+6);y+=10;
+  const colW3=(W-M*2-8)/3;
+  ps.forEach((qs,i)=>{
+    const pts=qs.filter(q=>details[q]&&details[q].ok).length;
+    const x=M+i*(colW3+4);
+    doc.setFillColor(240,244,248);doc.roundedRect(x,y,colW3,20,3,3,'F');
+    doc.setFillColor(0,51,102);doc.rect(x,y,colW3,4,'F');
+    doc.setTextColor(255,255,255);doc.setFontSize(7);
+    doc.text(plbls[i],x+colW3/2,y+2.8,{align:'center'});
+    doc.setTextColor(0,51,102);doc.setFont('helvetica','bold');doc.setFontSize(16);
+    doc.text(pts+'/'+qs.length,x+colW3/2,y+14,{align:'center'});
+  });
+  y+=26;
+
+  // Answer grid
+  const allQ=Array.from({length:40},(_,i)=>i+1);
+  const partRanges=[{from:1,to:13,label:'Passage 1 – Q1–13'},{from:14,to:26,label:'Passage 2 – Q14–26'},{from:27,to:40,label:'Passage 3 – Q27–40'}];
+  partRanges.forEach(({from,to,label})=>{
+    if(y>255){doc.addPage();y=15;}
+    doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(0,51,102);
+    doc.text(label,M,y);y+=6;
+    const rowH=9,cols=5,cw=(W-M*2)/cols;
+    for(let q=from;q<=to;q++){
+      const d=details[q]||{student:'—',correct:ANSWER_KEY[q],ok:false};
+      const col=(q-from)%cols,row=Math.floor((q-from)/cols);
+      const x=M+col*cw;
+      if(y+row*rowH>265&&col===0&&row>0){doc.addPage();y=15;}
+      const ady=y+row*rowH;
+      doc.setFillColor(d.ok?232:255,d.ok?245:235,d.ok?232:235);
+      doc.rect(x,ady-5,cw-1,rowH-1,'F');
+      doc.setTextColor(d.ok?30:180,d.ok?110:30,d.ok?40:30);
+      doc.setFont('helvetica','bold');doc.setFontSize(8);
+      doc.text('Q'+q+': '+(d.student||'—'),x+2,ady);
+      if(!d.ok){doc.setFont('helvetica','normal');doc.setFontSize(7);doc.text('Correct: '+d.correct,x+2,ady+3.5);}
+    }
+    const rows=Math.ceil((to-from+1)/cols);
+    y+=rows*rowH+6;
+  });
+
+  const totalPgs=doc.internal.getNumberOfPages();
+  for(let p=1;p<=totalPgs;p++){
+    doc.setPage(p);doc.setFillColor(0,45,114);doc.rect(0,H-11,W,11,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','normal');doc.setFontSize(8);
+    doc.text('IELTS Reading Mock Test 3  ·  Huong Stella Paradigm  ·  '+safeName,M,H-4);
+    doc.text('Page '+p+' of '+totalPgs,W-M,H-4,{align:'right'});
+  }
+  return doc;
+}
+
+const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxdPPd7LyO1Wr2I1GgkkHB09f0YIRD2gOCMCGmkOocpYlQov_6mPqdut9f-uxxvO448/exec';
+
+function sendToTeacher(score,details){
+  const doc=buildPDFDoc(score,details);
+  const pdfBase64=doc.output('datauristring').split(',')[1];
+  setEmailStatus('✉ Sending results to teacher…','var(--neutral)');
+  fetch(APPS_SCRIPT_URL,{
+    method:'POST',
+    body:JSON.stringify({
+      name:studentName,dob:formatDOB(studentDOB),date:examStartTime,
+      testName:'IELTS Reading Mock Test 3',
+      raw:score,pct:Math.round(score/40*100),details,pdf:pdfBase64
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status==='ok') setEmailStatus('✅ Results sent to teacher successfully.','#27ae60');
+    else setEmailStatus('❌ Send failed: '+res.message,'#c0392b');
+  })
+  .catch(err=>{setEmailStatus('❌ Connection error: '+err,'#c0392b');});
+}
+function setEmailStatus(msg,color){
+  const el=document.getElementById('emailStatus');
+  if(el){el.textContent=msg;el.style.color=color;}
+}
+
+// ── TEST REGISTRATION (Ctrl+Shift+R) ──────────────────────────
+const TEST_META = {testName:"IELTS Reading Mock Test 03",skill:"Reading",mockNum:"03",file:"IELTS_Reading_Mock_Test_03.html",source:"Cam21 T1",draftKey:"ielts_reading_mock03",audio:"-"};
+document.addEventListener('keydown', function(e){
+  if(e.ctrlKey && e.shiftKey && e.key.toUpperCase()==='R'){
+    e.preventDefault();
+    if(!confirm('Register "'+TEST_META.testName+'" in Test Map?')) return;
+    fetch(APPS_SCRIPT_URL,{
+      method:'POST',
+      body:JSON.stringify(Object.assign({action:'registerTest'},TEST_META))
+    })
+    .then(function(r){return r.json();})
+    .then(function(res){
+      alert(res.status==='ok'
+        ? '✅ Registered: '+TEST_META.testName
+        : '❌ '+(res.message||'Error'));
+    })
+    .catch(function(err){alert('❌ '+err);});
+  }
+});
+
+</script>
+</body>
+</html>
